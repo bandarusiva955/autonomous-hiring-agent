@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Report - AI Hiring Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .decision-banner {
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .decision-banner.strong-hire {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .decision-banner.consider {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .decision-banner.reject {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        }
+        
+        .decision-banner h2 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .decision-banner .score {
+            font-size: 1.5em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            background: white;
+            border-radius: 0 0 20px 20px;
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h3 {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .skill-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        
+        .skill-category {
+            margin-bottom: 30px;
+        }
+        
+        .skill-category h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .job-match {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .job-match h4 {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        
+        .match-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .match-info span {
+            background: #e8ecff;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+        
+        .match-info .score {
+            background: #667eea;
+            color: white;
+        }
+        
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .matched-skill {
+            background: #d4edda;
+            color: #155724;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+        }
+        
+        .missing-skill {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+        }
+        
+        .skill-gaps {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 15px;
+        }
+        
+        .skill-gaps h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .learning-resources {
+            background: #d1ecf1;
+            padding: 20px;
+            border-radius: 15px;
+        }
+        
+        .learning-resources h4 {
+            color: #0c5460;
+            margin-bottom: 15px;
+        }
+        
+        .resource-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .resource-item a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .resource-item a:hover {
+            text-decoration: underline;
+        }
+        
+        .interview-questions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+        }
+        
+        .interview-questions h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .question-list {
+            list-style: none;
+        }
+        
+        .question-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .question-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .graph-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .metric-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .metric-card .value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .metric-card .label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Upload</a>
+        
+        <div class="header">
+            <h1>📊 Resume Analysis Report</h1>
+            <p>Candidate: {{ results.candidate_name }}</p>
+        </div>
+        
+        <div class="decision-banner {{ results.hiring_score['decision']|lower|replace(' ', '-') }}">
+            <h2>{{ results.hiring_score['decision'] }}</h2>
+            <div class="score">Overall Score: {{ "%.1f"|format(results.hiring_score['overall_score'] * 100) }}%</div>
+        </div>
+        
+        <div class="content">
+            <!-- Metrics Section -->
+            <div class="section">
+                <h3>📈 Key Metrics</h3>
+                <div class="metrics">
+                    <div class="metric-card">
+                        <div class="value">{{ results.extracted_skills|length }}</div>
+                        <div class="label">Skills Found</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="value">{{ results.job_matches|length }}</div>
+                        <div class="label">Jobs Matched</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="value">{{ results.hiring_score['matched_skills_count'] }}</div>
+                        <div class="label">Skills Matched</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="value">{{ results.hiring_score['missing_skills_count'] }}</div>
+                        <div class="label">Skills Missing</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Extracted Skills Section -->
+            <div class="section">
+                <h3>🔍 Extracted Skills</h3>
+                
+                {% for category, skills in results.skills_by_category.items() %}
+                    <div class="skill-category">
+                        <h4>{{ category|upper }}</h4>
+                        <div class="skills-grid">
+                            {% for skill in skills %}
+                                <span class="skill-badge">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Best Match Section -->
+            <div class="section">
+                <h3>🎯 Best Job Match</h3>
+                {% if results.best_match %}
+                    <div class="job-match">
+                        <h4>{{ results.best_match.role }}</h4>
+                        <div class="match-info">
+                            <span class="score">Similarity: {{ "%.1f"|format(results.best_match.similarity_score * 100) }}%</span>
+                            <span>Match: {{ results.best_match.match_percentage }}%</span>
+                            <span>Experience: {{ results.best_match.experience_level }}</span>
+                        </div>
+                        <p>{{ results.best_match.description }}</p>
+                        
+                        <div class="skills-list">
+                            {% for skill in results.best_match.matched_skills %}
+                                <span class="matched-skill">✓ {{ skill }}</span>
+                            {% endfor %}
+                            {% for skill in results.best_match.missing_skills %}
+                                <span class="missing-skill">✗ {{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <p>No suitable job matches found.</p>
+                {% endif %}
+            </div>
+            
+            <!-- All Job Matches Section -->
+            <div class="section">
+                <h3>📋 All Job Matches</h3>
+                {% for job in results.job_matches %}
+                    <div class="job-match">
+                        <h4>{{ job.role }}</h4>
+                        <div class="match-info">
+                            <span class="score">Score: {{ "%.1f"|format(job.similarity_score * 100) }}%</span>
+                            <span>Match: {{ job.match_percentage }}%</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Skill Gaps Section -->
+            <div class="section">
+                <h3>📚 Skill Gap Analysis</h3>
+                {% if results.skill_gaps %}
+                    <div class="skill-gaps">
+                        <h4>Missing Skills for Best Match:</h4>
+                        <div class="skills-grid">
+                            {% for gap in results.skill_gaps %}
+                                <span class="missing-skill">{{ gap.skill }} ({{ gap.importance }})</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <p>No significant skill gaps identified.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Learning Recommendations Section -->
+            <div class="section">
+                <h3>🎓 Learning Recommendations</h3>
+                {% if results.learning_recommendations %}
+                    {% for rec in results.learning_recommendations %}
+                        <div class="learning-resources">
+                            <h4>For {{ rec.skill }}:</h4>
+                            {% for resource in rec.resources %}
+                                <div class="resource-item">
+                                    <a href="{{ resource.url }}" target="_blank">{{ resource.title }}</a>
+                                    <span> - {{ resource.difficulty }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No specific learning recommendations available.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Interview Questions Section -->
+            <div class="section">
+                <h3>❓ Suggested Interview Questions</h3>
+                {% if results.interview_questions %}
+                    {% for skill, questions in results.interview_questions.items() %}
+                        <div class="interview-questions">
+                            <h4>{{ skill|upper }}:</h4>
+                            <ul class="question-list">
+                                {% for question in questions %}
+                                    <li>{{ question }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No interview questions generated.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Graph Section -->
+            <div class="section">
+                <h3>🔗 Candidate-Job Graph</h3>
+                <div class="graph-section">
+                    <p>Graph Nodes: {{ results.graph_data.metadata.total_nodes }}</p>
+                    <p>Graph Edges: {{ results.graph_data.metadata.total_edges }}</p>
+                    <p>Graph Density: {{ "%.3f"|format(results.graph_data.metadata.density) }}</p>
+                    <p><em>Graph visualization data available in JSON format</em></p>
+                </div>
+            </div>
+            
+            <!-- Score Breakdown -->
+            <div class="section">
+                <h3>📊 Score Breakdown</h3>
+                <div class="metrics">
+                    <div class="metric-card">
+                        <div class="value">{{ "%.1f"|format(results.hiring_score['skill_match_score'] * 100) }}%</div>
+                        <div class="label">Skill Match</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="value">{{ "%.1f"|format(results.hiring_score['skill_count_score'] * 100) }}%</div>
+                        <div class="label">Skill Count</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="value">{{ "%.1f"|format(results.hiring_score['technical_ratio_score'] * 100) }}%</div>
+                        <div class="label">Technical Ratio</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="value">{{ "%.1f"|format(results.hiring_score['critical_skills_score'] * 100) }}%</div>
+                        <div class="label">Critical Skills</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="value">{{ "%.1f"|format(results.hiring_score['similarity_score'] * 100) }}%</div>
+                        <div class="label">Similarity</div>
+                    </div>
+                </div>
+            </div>
+            
+            <a href="/" class="btn">Analyze Another Resume</a>
+        </div>
+    </div>
+</body>
+</html>
+

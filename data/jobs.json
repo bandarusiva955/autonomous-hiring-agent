@@ -1,0 +1,245 @@
+{
+  "jobs": [
+    {
+      "role": "Data Scientist",
+      "description": "Analyze complex data sets to identify patterns and insights. Build predictive models and machine learning solutions.",
+      "experience_level": "Mid-Level",
+      "core_skills": ["python", "machine learning", "statistics", "sql", "data analysis"],
+      "secondary_skills": ["tensorflow", "pytorch", "scikit-learn", "pandas", "numpy", "tableau", "r"],
+      "category": "data"
+    },
+    {
+      "role": "Machine Learning Engineer",
+      "description": "Design and deploy machine learning models at scale. Work on MLOps and model optimization.",
+      "experience_level": "Senior",
+      "core_skills": ["python", "machine learning", "deep learning", "tensorflow", "pytorch"],
+      "secondary_skills": ["docker", "kubernetes", "aws", "scikit-learn", "mlops", "sql"],
+      "category": "ai"
+    },
+    {
+      "role": "Backend Developer",
+      "description": "Build server-side applications and APIs. Design and implement database solutions.",
+      "experience_level": "Mid-Level",
+      "core_skills": ["python", "django", "flask", "sql", "postgresql"],
+      "secondary_skills": ["docker", "redis", "aws", "linux", "git", "rest", "graphql"],
+      "category": "backend"
+    },
+    {
+      "role": "Frontend Developer",
+      "description": "Create responsive web interfaces and interactive user experiences.",
+      "experience_level": "Mid-Level",
+      "core_skills": ["javascript", "react", "html", "css"],
+      "secondary_skills": ["typescript", "next.js", "vue.js", "angular", "sass", "webpack"],
+      "category": "frontend"
+    },
+    {
+      "role": "Full Stack Developer",
+      "description": "Develop both frontend and backend components of web applications.",
+      "experience_level": "Senior",
+      "core_skills": ["javascript", "python", "react", "django", "sql", "docker"],
+      "secondary_skills": ["node.js", "flask", "postgresql", "mongodb", "aws", "git"],
+      "category": "fullstack"
+    },
+    {
+      "role": "DevOps Engineer",
+      "description": "Manage cloud infrastructure, CI/CD pipelines, and deployment automation.",
+      "experience_level": "Senior",
+      "core_skills": ["docker", "kubernetes", "terraform", "aws", "jenkins"],
+      "secondary_skills": ["ansible", "gitlab ci", "github actions", "prometheus", "grafana", "linux"],
+      "category": "devops"
+    },
+    {
+      "role": "Data Engineer",
+      "description": "Build and maintain data pipelines and ETL processes. Design data warehouse solutions.",
+      "experience_level": "Mid-Level",
+      "core_skills": ["python", "sql", "spark", "airflow", "aws"],
+      "secondary_skills": ["kafka", "postgresql", "snowflake", "databricks", "dbt"],
+      "category": "data"
+    },
+    {
+      "role": "Cloud Engineer",
+      "description": "Design and manage cloud infrastructure and services.",
+      "experience_level": "Senior",
+      "core_skills": ["aws", "azure", "docker", "kubernetes", "terraform"],
+      "secondary_skills": ["python", "ansible", "linux", "networking", "security"],
+      "category": "cloud"
+    },
+    {
+      "role": "Software Engineer",
+      "description": "Design, develop, and maintain software applications.",
+      "experience_level": "Mid-Level",
+      "core_skills": ["python", "java", "git", "sql"],
+      "secondary_skills": ["docker", "aws", "agile", "rest", "linux"],
+      "category": "engineering"
+    },
+    {
+      "role": "AI Engineer",
+      "description": "Develop AI solutions and integrate machine learning into applications.",
+      "experience_level": "Senior",
+      "core_skills": ["python", "machine learning", "deep learning", "tensorflow", "pytorch"],
+      "secondary_skills": ["nlp", "computer vision", "docker", "aws", "mlops"],
+      "category": "ai"
+    },
+    {
+      "role": "NLP Engineer",
+      "description": "Work on natural language processing and text analysis systems.",
+      "experience_level": "Senior",
+      "core_skills": ["python", "nlp", "machine learning", "tensorflow", "pytorch"],
+      "secondary_skills": ["hugging face", "transformers", "spacy", "nltk", "sql"],
+      "category": "ai"
+    },
+    {
+      "role": "Computer Vision Engineer",
+      "description": "Develop image recognition and computer vision solutions.",
+      "experience_level": "Senior",
+      "core_skills": ["python", "computer vision", "opencv", "tensorflow", "pytorch"],
+      "secondary_skills": ["deep learning", "yolo", "docker", "cuda", "linux"],
+      "category": "ai"
+    },
+    {
+      "role": "Database Administrator",
+      "description": "Manage and optimize database systems.",
+      "experience_level": "Senior",
+      "core_skills": ["postgresql", "mysql", "sql", "linux"],
+      "secondary_skills": ["mongodb", "redis", "docker", "aws", "performance tuning"],
+      "category": "database"
+    },
+    {
+      "role": "Security Engineer",
+      "description": "Implement security measures and conduct vulnerability assessments.",
+      "experience_level": "Senior",
+      "core_skills": ["cybersecurity", "network security", "penetration testing"],
+      "secondary_skills": ["docker", "linux", "aws", "encryption", "firewall"],
+      "category": "security"
+    },
+    {
+      "role": "Blockchain Developer",
+      "description": "Develop blockchain applications and smart contracts.",
+      "experience_level": "Senior",
+      "core_skills": ["solidity", "ethereum", "web3", "smart contracts"],
+      "secondary_skills": ["javascript", "python", "docker", "hyperledger"],
+      "category": "emerging"
+    },
+    {
+      "role": "iOS Developer",
+      "description": "Develop iOS mobile applications.",
+      "experience_level": "Mid-Level",
+      "core_skills": ["swift", "ios", "xcode"],
+      "secondary_skills": ["objective-c", "core data", "firebase", "rest"],
+      "category": "mobile"
+    },
+    {
+      "role": "Android Developer",
+      "description": "Develop Android mobile applications.",
+      "experience_level": "Mid-Level",
+      "core_skills": ["kotlin", "java", "android"],
+      "secondary_skills": ["flutter", "firebase", "rest", "sqlite"],
+      "category": "mobile"
+    },
+    {
+      "role": "React Native Developer",
+      "description": "Develop cross-platform mobile applications.",
+      "experience_level": "Mid-Level",
+      "core_skills": ["javascript", "react", "react native"],
+      "secondary_skills": ["typescript", "redux", "firebase", "rest"],
+      "category": "mobile"
+    },
+    {
+      "role": "Product Manager",
+      "description": "Define product vision and strategy. Work with engineering teams.",
+      "experience_level": "Senior",
+      "core_skills": ["product management", "agile", "analytics"],
+      "secondary_skills": ["sql", "jira", "ux design", "roadmapping"],
+      "category": "business"
+    },
+    {
+      "role": "Data Analyst",
+      "description": "Analyze data and create reports to support business decisions.",
+      "experience_level": "Junior",
+      "core_skills": ["sql", "excel", "tableau", "data analysis"],
+      "secondary_skills": ["python", "power bi", "statistics", "pandas"],
+      "category": "data"
+    },
+    {
+      "role": "Business Analyst",
+      "description": "Analyze business processes and requirements.",
+      "experience_level": "Mid-Level",
+      "core_skills": ["business analysis", "sql", "excel"],
+      "secondary_skills": ["tableau", "agile", "jira", "requirements gathering"],
+      "category": "business"
+    },
+    {
+      "role": "QA Engineer",
+      "description": "Design and implement testing strategies.",
+      "experience_level": "Mid-Level",
+      "core_skills": ["selenium", "python", "testing", "automation"],
+      "secondary_skills": ["jenkins", "docker", "agile", "rest"],
+      "category": "quality"
+    },
+    {
+      "role": "Site Reliability Engineer",
+      "description": "Ensure system reliability and performance.",
+      "experience_level": "Senior",
+      "core_skills": ["linux", "docker", "kubernetes", "prometheus"],
+      "secondary_skills": ["aws", "terraform", "grafana", "python", "incident response"],
+      "category": "devops"
+    },
+    {
+      "role": "Solutions Architect",
+      "description": "Design technical solutions for clients.",
+      "experience_level": "Senior",
+      "core_skills": ["aws", "system design", "cloud"],
+      "secondary_skills": ["docker", "kubernetes", "security", "networking"],
+      "category": "architecture"
+    },
+    {
+      "role": "Technical Lead",
+      "description": "Lead technical teams and make architectural decisions.",
+      "experience_level": "Senior",
+      "core_skills": ["python", "system design", "leadership", "agile"],
+      "secondary_skills": ["aws", "docker", "microservices", "mentoring"],
+      "category": "leadership"
+    },
+    {
+      "role": "Research Scientist",
+      "description": "Conduct research in AI/ML and publish findings.",
+      "experience_level": "Senior",
+      "core_skills": ["machine learning", "deep learning", "python", "research"],
+      "secondary_skills": ["tensorflow", "pytorch", "nlp", "computer vision", "statistics"],
+      "category": "research"
+    },
+    {
+      "role": "ETL Developer",
+      "description": "Develop ETL pipelines for data integration.",
+      "experience_level": "Mid-Level",
+      "core_skills": ["sql", "python", "airflow", "etl"],
+      "secondary_skills": ["spark", "snowflake", "postgresql", "docker"],
+      "category": "data"
+    },
+    {
+      "role": "BI Developer",
+      "description": "Develop business intelligence solutions and dashboards.",
+      "experience_level": "Mid-Level",
+      "core_skills": ["tableau", "sql", "power bi", "data warehousing"],
+      "secondary_skills": ["python", "etl", "snowflake", "excel"],
+      "category": "data"
+    },
+    {
+      "role": "Systems Administrator",
+      "description": "Manage and maintain IT infrastructure.",
+      "experience_level": "Mid-Level",
+      "core_skills": ["linux", "windows server", "networking", "security"],
+      "secondary_skills": ["docker", "powershell", "bash", "ansible"],
+      "category": "operations"
+    },
+    {
+      "role": "Network Engineer",
+      "description": "Design and manage network infrastructure.",
+      "experience_level": "Mid-Level",
+      "core_skills": ["networking", "cisco", "firewall", "security"],
+      "secondary_skills": ["aws", "azure", "linux", "vpn"],
+      "category": "infrastructure"
+    }
+  ]
+}
+

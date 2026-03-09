@@ -1,0 +1,218 @@
+{
+  "learning_resources": [
+    {
+      "skill": "python",
+      "resources": [
+        {"title": "Python for Everybody", "url": "https://www.coursera.org/specializations/python", "difficulty": "Beginner"},
+        {"title": "Complete Python Bootcamp", "url": "https://www.udemy.com/complete-python-bootcamp/", "difficulty": "Intermediate"},
+        {"title": "Python Official Documentation", "url": "https://docs.python.org/3/", "difficulty": "All Levels"}
+      ]
+    },
+    {
+      "skill": "machine learning",
+      "resources": [
+        {"title": "Machine Learning by Stanford", "url": "https://www.coursera.org/learn/machine-learning", "difficulty": "Intermediate"},
+        {"title": "Machine Learning A-Z", "url": "https://www.udemy.com/machinelearning/", "difficulty": "Beginner"},
+        {"title": "DeepLearning.ai Specialization", "url": "https://www.coursera.org/specializations/deep-learning", "difficulty": "Advanced"}
+      ]
+    },
+    {
+      "skill": "deep learning",
+      "resources": [
+        {"title": "Deep Learning Specialization", "url": "https://www.coursera.org/specializations/deep-learning", "difficulty": "Advanced"},
+        {"title": "Neural Networks and Deep Learning", "url": "https://www.deeplearning.ai/program/neural-networks-and-deep-learning/", "difficulty": "Intermediate"}
+      ]
+    },
+    {
+      "skill": "tensorflow",
+      "resources": [
+        {"title": "TensorFlow Developer Certificate", "url": "https://www.tensorflow.org/certificate", "difficulty": "Intermediate"},
+        {"title": "TensorFlow Advanced Techniques", "url": "https://www.coursera.org/specializations/tensorflow-advanced-techniques", "difficulty": "Advanced"}
+      ]
+    },
+    {
+      "skill": "pytorch",
+      "resources": [
+        {"title": "PyTorch for Deep Learning", "url": "https://www.coursera.org/learn/deep-learning-with-pytorch", "difficulty": "Intermediate"},
+        {"title": "Official PyTorch Tutorials", "url": "https://pytorch.org/tutorials/", "difficulty": "All Levels"}
+      ]
+    },
+    {
+      "skill": "docker",
+      "resources": [
+        {"title": "Docker for Beginners", "url": "https://docker-curriculum.com/", "difficulty": "Beginner"},
+        {"title": "Docker Mastery", "url": "https://www.udemy.com/docker-mastery/", "difficulty": "Intermediate"},
+        {"title": "Docker & Kubernetes Guide", "url": "https://www.udemy.com/docker-kubernetes/", "difficulty": "Advanced"}
+      ]
+    },
+    {
+      "skill": "kubernetes",
+      "resources": [
+        {"title": "Kubernetes for Beginners", "url": "https://kubernetes.io/docs/tutorials/", "difficulty": "Beginner"},
+        {"title": "Certified Kubernetes Administrator", "url": "https://www.cncf.io/certification/cka/", "difficulty": "Advanced"}
+      ]
+    },
+    {
+      "skill": "aws",
+      "resources": [
+        {"title": "AWS Solutions Architect", "url": "https://aws.amazon.com/training/", "difficulty": "Intermediate"},
+        {"title": "AWS Cloud Practitioner", "url": "https://aws.amazon.com/certification/", "difficulty": "Beginner"}
+      ]
+    },
+    {
+      "skill": "sql",
+      "resources": [
+        {"title": "SQL for Data Science", "url": "https://www.coursera.org/learn/sql-for-data-science", "difficulty": "Beginner"},
+        {"title": "Advanced SQL", "url": "https://www.kaggle.com/learn/advanced-sql", "difficulty": "Advanced"}
+      ]
+    },
+    {
+      "skill": "django",
+      "resources": [
+        {"title": "Django for Beginners", "url": "https://www.udemy.com/django-for-beginners/", "difficulty": "Beginner"},
+        {"title": "Django Rest Framework", "url": "https://www.django-rest-framework.org/tutorial/quickstart/", "difficulty": "Intermediate"}
+      ]
+    },
+    {
+      "skill": "flask",
+      "resources": [
+        {"title": "Flask Mega-Tutorial", "url": "https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world", "difficulty": "Beginner"},
+        {"title": "Building REST APIs with Flask", "url": "https://www.udemy.com/rest-api-flask/", "difficulty": "Intermediate"}
+      ]
+    },
+    {
+      "skill": "react",
+      "resources": [
+        {"title": "React for Beginners", "url": "https://reactforbeginners.com/", "difficulty": "Beginner"},
+        {"title": "React Complete Guide", "url": "https://www.udemy.com/react-the-complete-guide/", "difficulty": "Intermediate"}
+      ]
+    },
+    {
+      "skill": "javascript",
+      "resources": [
+        {"title": "JavaScript.info", "url": "https://javascript.info/", "difficulty": "Beginner"},
+        {"title": "Modern JavaScript", "url": "https://www.udemy.com/modern-javascript/", "difficulty": "Intermediate"}
+      ]
+    },
+    {
+      "skill": "nlp",
+      "resources": [
+        {"title": "NLP with Deep Learning", "url": "https://www.coursera.org/learn/language-processing", "difficulty": "Advanced"},
+        {"title": "Hugging Face Course", "url": "https://huggingface.co/learn", "difficulty": "Intermediate"}
+      ]
+    },
+    {
+      "skill": "computer vision",
+      "resources": [
+        {"title": "Computer Vision Course", "url": "https://www.coursera.org/learn/convolutional-neural-networks", "difficulty": "Advanced"},
+        {"title": "OpenCV Python", "url": "https://docs.opencv.org/4.x/d6/d00/tutorial_py_root.html", "difficulty": "Intermediate"}
+      ]
+    },
+    {
+      "skill": "data analysis",
+      "resources": [
+        {"title": "Data Analysis with Python", "url": "https://www.coursera.org/learn/data-analysis-with-python", "difficulty": "Beginner"},
+        {"title": "Pandas Documentation", "url": "https://pandas.pydata.org/docs/", "difficulty": "All Levels"}
+      ]
+    },
+    {
+      "skill": "pandas",
+      "resources": [
+        {"title": "Pandas Tutorial", "url": "https://pandas.pydata.org/docs/user_guide/10min.html", "difficulty": "Beginner"},
+        {"title": "Data Analysis with Pandas", "url": "https://www.udemy.com/data-analysis-with-pandas/", "difficulty": "Intermediate"}
+      ]
+    },
+    {
+      "skill": "scikit-learn",
+      "resources": [
+        {"title": "Scikit-learn Documentation", "url": "https://scikit-learn.org/stable/", "difficulty": "All Levels"},
+        {"title": "Machine Learning with Scikit-learn", "url": "https://www.coursera.org/learn/machine-learning-with-scikit-learn", "difficulty": "Intermediate"}
+      ]
+    },
+    {
+      "skill": "git",
+      "resources": [
+        {"title": "Git Handbook", "url": "https://guides.github.com/introduction/git-handbook/", "difficulty": "Beginner"},
+        {"title": "Pro Git Book", "url": "https://git-scm.com/book/en/v2", "difficulty": "All Levels"}
+      ]
+    },
+    {
+      "skill": "linux",
+      "resources": [
+        {"title": "Linux Basics", "url": "https://www.linuxfoundation.org/resources/", "difficulty": "Beginner"},
+        {"title": "Linux Command Line", "url": "https://www.udemy.com/linux-command-line/", "difficulty": "Intermediate"}
+      ]
+    },
+    {
+      "skill": "postgresql",
+      "resources": [
+        {"title": "PostgreSQL Tutorial", "url": "https://www.postgresql.org/docs/", "difficulty": "Beginner"},
+        {"title": "Advanced PostgreSQL", "url": "https://www.udemy.com/advanced-postgresql/", "difficulty": "Advanced"}
+      ]
+    },
+    {
+      "skill": "mongodb",
+      "resources": [
+        {"title": "MongoDB University", "url": "https://university.mongodb.com", "difficulty": "Beginner"},
+        {"title": "MongoDB Basics", "url": "https://www.mongodb.com/basics", "difficulty": "Beginner"}
+      ]
+    },
+    {
+      "skill": "redis",
+      "resources": [
+        {"title": "Redis Documentation", "url": "https://redis.io/documentation", "difficulty": "All Levels"},
+        {"title": "Redis for Beginners", "url": "https://www.udemy.com/redis/", "difficulty": "Beginner"}
+      ]
+    },
+    {
+      "skill": "graphql",
+      "resources": [
+        {"title": "How to GraphQL", "url": "https://www.howtographql.com/", "difficulty": "Intermediate"},
+        {"title": "Apollo GraphQL", "url": "https://www.apollographql.com/docs/", "difficulty": "Intermediate"}
+      ]
+    },
+    {
+      "skill": "devops",
+      "resources": [
+        {"title": "DevOps Bootcamp", "url": "https://www.udemy.com/devops-bootcamp/", "difficulty": "Intermediate"},
+        {"title": "DevOps Essentials", "url": "https://www.udemy.com/devops-essentials/", "difficulty": "Beginner"}
+      ]
+    },
+    {
+      "skill": "mlops",
+      "resources": [
+        {"title": "MLOps Specialization", "url": "https://www.coursera.org/specializations/mlops-machine-learning-operations", "difficulty": "Advanced"},
+        {"title": "MLOps.org", "url": "https://mlops.org/", "difficulty": "All Levels"}
+      ]
+    },
+    {
+      "skill": "terraform",
+      "resources": [
+        {"title": "Terraform Tutorial", "url": "https://www.terraform.io/intro", "difficulty": "Beginner"},
+        {"title": "Infrastructure as Code", "url": "https://www.udemy.com/terraform/", "difficulty": "Intermediate"}
+      ]
+    },
+    {
+      "skill": "agile",
+      "resources": [
+        {"title": "Agile Project Management", "url": "https://www.scrum.org/resources/what-is-scrum", "difficulty": "Beginner"},
+        {"title": "Professional Scrum Master", "url": "https://www.scrum.org/courses/professional-scrum-master", "difficulty": "Intermediate"}
+      ]
+    },
+    {
+      "skill": "statistics",
+      "resources": [
+        {"title": "Statistics for Data Science", "url": "https://www.coursera.org/learn/statistics-for-data-science", "difficulty": "Intermediate"},
+        {"title": "Think Stats", "url": "https://greenteapress.com/wp/think-stats-2e/", "difficulty": "Intermediate"}
+      ]
+    },
+    {
+      "skill": "blockchain",
+      "resources": [
+        {"title": "Blockchain Specialization", "url": "https://www.coursera.org/specializations/blockchain", "difficulty": "Advanced"},
+        {"title": "Ethereum Development", "url": "https://ethereum.org/en/developers/", "difficulty": "Intermediate"}
+      ]
+    }
+  ]
+}
+

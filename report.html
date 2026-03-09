@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analysis Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar h2 {
+            color: #667eea;
+            font-size: 22px;
+        }
+        
+        .print-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .print-btn:hover {
+            background: #764ba2;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .report-header {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .report-title {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .report-meta {
+            color: #999;
+            font-size: 13px;
+        }
+        
+        .score-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .score-display {
+            font-size: 72px;
+            font-weight: 900;
+            margin: 20px 0;
+        }
+        
+        .score-label {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .recommendation {
+            font-size: 14px;
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            color: #333;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .skill-box {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .skill-box h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .skill-list {
+            list-style: none;
+        }
+        
+        .skill-list li {
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .skill-list li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #e8e9ff;
+            color: #667eea;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .badge.technical {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .badge.soft {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .metric-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .strengths {
+            background: #e8f5e9;
+            padding: 20px;
+            border-left: 4px solid #4caf50;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .strengths h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+        
+        .concerns {
+            background: #fff3e0;
+            padding: 20px;
+            border-left: 4px solid #ff9800;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .concerns h4 {
+            color: #e65100;
+            margin-bottom: 10px;
+        }
+        
+        .resource-card {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .resource-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .resource-meta {
+            display: flex;
+            gap: 10px;
+            font-size: 12px;
+            color: #999;
+            margin-top: 8px;
+        }
+        
+        .resource-link {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .resource-link:hover {
+            text-decoration: underline;
+        }
+        
+        .tier-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        
+        .tier-a { background: #c8e6c9; color: #1b5e20; }
+        .tier-b { background: #ffe0b2; color: #e65100; }
+        .tier-c { background: #ffccbc; color: #bf360c; }
+        .tier-d { background: #ffccbc; color: #d32f2f; }
+        .tier-e { background: #ffcdd2; color: #c62828; }
+        
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .back-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn:hover {
+            background: #764ba2;
+        }
+        
+        @media print {
+            body { background: white; }
+            .navbar, .print-btn, .back-btn { display: none; }
+            .section { box-shadow: none; border: 1px solid #ddd; }
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            .score-display { font-size: 48px; }
+            .section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-content">
+            <h2>📊 Resume Analysis Report</h2>
+            <button class="print-btn" onclick="window.print()">🖨️ Print Report</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <a href="/" class="back-btn">← Upload Another Resume</a>
+        
+        <!-- Main Score Card -->
+        {% set overview = report.candidate_overview %}
+        <div class="score-card">
+            <div class="score-label">Overall Hiring Score</div>
+            <div class="score-display">{{ "%.0f"|format(overview.hiring_score) }}</div>
+            <div>{{ overview.hiring_recommendation }}</div>
+            <div class="recommendation">
+                <strong>Tier:</strong> {{ overview.hiring_tier }}
+            </div>
+        </div>
+        
+        <!-- Executive Summary -->
+        {% set summary = report.executive_summary %}
+        <div class="section">
+            <h2 class="section-title">Executive Summary</h2>
+            <p>{{ summary.assessment }}</p>
+            
+            <div class="strengths">
+                <h4>✓ Key Strengths</h4>
+                <ul class="skill-list">
+                    {% for strength in summary.key_strengths %}
+                    <li>{{ strength }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="concerns">
+                <h4>⚠ Areas of Concern</h4>
+                <ul class="skill-list">
+                    {% for concern in summary.key_concerns %}
+                    <li>{{ concern }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <h4>Next Steps:</h4>
+                <ul class="skill-list">
+                    {% for step in summary.next_steps %}
+                    <li>{{ step }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Skills Analysis -->
+        {% set skills = report.skills_analysis %}
+        <div class="section">
+            <h2 class="section-title">Skills Analysis</h2>
+            <div class="skill-box">
+                <h4>Found {{ skills.total_found }} Total Skills</h4>
+                <div class="metric-row">
+                    <span class="metric-label">Technical Skills:</span>
+                    <span class="metric-value">{{ skills.technical.count }}</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Soft Skills:</span>
+                    <span class="metric-value">{{ skills.soft.count }}</span>
+                </div>
+            </div>
+            
+            <h4 style="margin: 20px 0;">Technical Skills Identified:</h4>
+            <div>
+                {% for skill in skills.technical.skills %}
+                <span class="badge technical">{{ skill }}</span>
+                {% endfor %}
+            </div>
+            
+            <h4 style="margin: 20px 0;">Soft Skills Identified:</h4>
+            <div>
+                {% for skill in skills.soft.skills %}
+                <span class="badge soft">{{ skill }}</span>
+                {% endfor %}
+            </div>
+            
+            <h4 style="margin: 20px 0;">Skill Distribution:</h4>
+            <div class="skill-box">
+                <div class="metric-row">
+                    <span>Technical:</span>
+                    <span>{{ skills.skill_distribution.technical_percentage }}%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ skills.skill_distribution.technical_percentage }}%"></div>
+                </div>
+                <div class="metric-row">
+                    <span>Soft:</span>
+                    <span>{{ skills.skill_distribution.soft_percentage }}%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ skills.skill_distribution.soft_percentage }}%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Match Analysis -->
+        {% set match = report.match_analysis %}
+        <div class="section">
+            <h2 class="section-title">Job Match Analysis</h2>
+            <div class="metric-row">
+                <span class="metric-label">Overall Match Score:</span>
+                <span class="metric-value">{{ match.overall_match_score }}%</span>
+            </div>
+            
+            <h4 style="margin: 20px 0 10px;">Required Skills Match:</h4>
+            <div class="skill-box">
+                <div class="metric-row">
+                    <span>Coverage:</span>
+                    <span style="font-weight: 600;">{{ match.required_matches|length }}/{{ match.required_matches|length + match.required_matches|length }}</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ (match.required_matches|length / (match.required_matches|length + match.required_matches|length)) * 100 }}%"></div>
+                </div>
+            </div>
+            
+            {% if match.skill_gaps %}
+            <h4 style="margin: 20px 0;">Skill Gaps to Address:</h4>
+            <div>
+                {% for gap in match.skill_gaps[:5] %}
+                <span class="badge">{{ gap.skill }} 
+                    <span style="font-size: 10px; opacity: 0.8;">
+                        ({{ gap.priority }})
+                    </span>
+                </span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Hiring Assessment -->
+        {% set hiring = report.hiring_assessment %}
+        <div class="section">
+            <h2 class="section-title">Hiring Assessment</h2>
+            <div class="skill-box">
+                <h4>Score Breakdown</h4>
+                <div class="metric-row">
+                    <span>Skill Match (35%)</span>
+                    <span class="metric-value">{{ hiring.scoring_breakdown.skill_match }}/100</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ hiring.scoring_breakdown.skill_match }}%"></div>
+                </div>
+                
+                <div class="metric-row">
+                    <span>Skill Count (15%)</span>
+                    <span class="metric-value">{{ hiring.scoring_breakdown.skill_count }}/100</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ hiring.scoring_breakdown.skill_count }}%"></div>
+                </div>
+                
+                <div class="metric-row">
+                    <span>Technical Ratio (20%)</span>
+                    <span class="metric-value">{{ hiring.scoring_breakdown.technical_ratio }}/100</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ hiring.scoring_breakdown.technical_ratio }}%"></div>
+                </div>
+                
+                <div class="metric-row">
+                    <span>Critical Skills (30%)</span>
+                    <span class="metric-value">{{ hiring.scoring_breakdown.critical_skills }}/100</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ hiring.scoring_breakdown.critical_skills }}%"></div>
+                </div>
+            </div>
+            
+            <p style="margin-top: 20px; color: #666;">{{ hiring.detailed_assessment }}</p>
+        </div>
+        
+        <!-- Learning Recommendations -->
+        {% set learning = report.learning_recommendations %}
+        <div class="section">
+            <h2 class="section-title">Learning Recommendations</h2>
+            
+            {% if learning.recommendations %}
+            <p style="margin-bottom: 20px; color: #666;">{{ learning.summary }}</p>
+            
+            <h4 style="margin-bottom: 15px;">Recommended Resources:</h4>
+            {% for resource in learning.recommendations[:10] %}
+            <div class="resource-card">
+                <div class="resource-title">{{ resource.title }}</div>
+                <div class="resource-meta">
+                    <span>📚 {{ resource.type|replace('_', ' ')|title }}</span>
+                    <span>📊 {{ resource.difficulty|title }}</span>
+                    <span class="badge" style="margin: 0;">{{ resource.skill }}</span>
+                </div>
+                <div style="margin-top: 10px;">
+                    <a href="{{ resource.url }}" target="_blank" class="resource-link">View Resource →</a>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+        
+        <!-- Final Recommendations -->
+        {% set recommendations = report.recommendations %}
+        <div class="section">
+            <h2 class="section-title">Final Recommendations</h2>
+            
+            <h4 style="margin-bottom: 15px;">Hiring Recommendations:</h4>
+            <ul class="skill-list">
+                {% for rec in recommendations.hiring_recommendations %}
+                <li>{{ rec }}</li>
+                {% endfor %}
+            </ul>
+            
+            <h4 style="margin: 20px 0 15px;">Interview Focus Areas:</h4>
+            <div class="skill-box">
+                <h5>Ask About:</h5>
+                <ul class="skill-list">
+                    {% for skill in recommendations.interview_focus.ask_about %}
+                    <li>{{ skill }}</li>
+                    {% endfor %}
+                </ul>
+                
+                <h5 style="margin-top: 15px;">Validate Strengths:</h5>
+                <ul class="skill-list">
+                    {% for strength in recommendations.interview_focus.validate_strengths %}
+                    <li>{{ strength }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <h4 style="margin: 20px 0 15px;">Onboarding Notes:</h4>
+            <ul class="skill-list">
+                {% for note in recommendations.onboarding_notes %}
+                <li>{{ note }}</li>
+                {% endfor %}
+            </ul>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #f0f2ff; border-radius: 5px;">
+                <strong>Success Probability:</strong> {{ recommendations.success_probability }}
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Report generated on {{ report.metadata.generated_at }}</p>
+            <p>© 2024 Resume Analyzer - AI-Powered Hiring Intelligence</p>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analyzer - AI-Powered Hiring Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .upload-section {
+            margin: 30px 0;
+        }
+        
+        .upload-area {
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #f8f9ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            border-color: #764ba2;
+            background: #f0f2ff;
+        }
+        
+        .upload-area input {
+            display: none;
+        }
+        
+        .upload-text {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .upload-hint {
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .file-name {
+            margin-top: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            color: #333;
+            display: none;
+            word-break: break-all;
+        }
+        
+        .file-name.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin: 20px 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .error-message {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .error-message.active {
+            display: block;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #666;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .features {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .features h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-list li {
+            color: #666;
+            padding: 8px 0;
+            font-size: 13px;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">📄</div>
+            <h1>Resume Analyzer</h1>
+            <p>AI-Powered Hiring Intelligence & Skill Assessment</p>
+        </div>
+        
+        {% if error %}
+        <div class="error-message active">
+            <strong>Error:</strong> {{ error }}
+        </div>
+        {% endif %}
+        
+        <form method="POST" enctype="multipart/form-data" id="uploadForm">
+            <div class="upload-section">
+                <div class="upload-area" onclick="document.getElementById('resumeFile').click()">
+                    <div class="upload-text">📤 Click to upload or drag & drop</div>
+                    <div class="upload-hint">PDF or DOCX files (Max 10MB)</div>
+                    <input type="file" id="resumeFile" name="resume_file" accept=".pdf,.docx" required>
+                </div>
+                <div class="file-name" id="fileName"></div>
+            </div>
+            
+            <button type="submit" class="submit-btn" id="submitBtn">Analyze Resume</button>
+        </form>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Analyzing resume... This may take a moment.</div>
+        </div>
+        
+        <div class="features">
+            <h3>What We Analyze:</h3>
+            <ul class="feature-list">
+                <li>Extract technical and soft skills</li>
+                <li>Match against job requirements</li>
+                <li>Calculate hiring fit score</li>
+                <li>Generate learning recommendations</li>
+                <li>Provide detailed assessment report</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        const resumeFile = document.getElementById('resumeFile');
+        const fileName = document.getElementById('fileName');
+        const uploadForm = document.getElementById('uploadForm');
+        const loading = document.getElementById('loading');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // Handle file selection
+        resumeFile.addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                fileName.textContent = '✓ Selected: ' + e.target.files[0].name;
+                fileName.classList.add('active');
+            }
+        });
+        
+        // Handle drag and drop
+        const uploadArea = document.querySelector('.upload-area');
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.style.borderColor = '#764ba2';
+                uploadArea.style.background = '#f0f2ff';
+            });
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.style.borderColor = '#667eea';
+                uploadArea.style.background = '#f8f9ff';
+            });
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            resumeFile.files = files;
+            
+            if (files.length > 0) {
+                fileName.textContent = '✓ Selected: ' + files[0].name;
+                fileName.classList.add('active');
+            }
+        });
+        
+        // Handle form submission
+        uploadForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!resumeFile.files.length) {
+                alert('Please select a file');
+                return;
+            }
+            
+            // Show loading, disable submit
+            loading.style.display = 'block';
+            submitBtn.disabled = true;
+            
+            // Submit form
+            uploadForm.submit();
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Roles - AI Hiring Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .nav {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            margin: 0 5px;
+        }
+        
+        .nav a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .job-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .job-card h3 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        
+        .job-card .category {
+            color: #764ba2;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        
+        .job-card .description {
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .skills-required {
+            margin-top: 15px;
+        }
+        
+        .skills-required h4 {
+            color: #333;
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+        
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .skill-badge {
+            background: #f0f0f0;
+            color: #555;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+        }
+        
+        .critical-badge {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            margin-top: 20px;
+        }
+        
+        .total-count {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>💼 Job Roles</h1>
+            <p>Available positions and their required skills</p>
+        </header>
+        
+        <nav class="nav">
+            <a href="/">Home</a>
+            <a href="/jobs">Jobs</a>
+            <a href="/skills">Skills</a>
+        </nav>
+        
+        <div class="total-count">
+            Total Job Roles: {{ jobs|length }}
+        </div>
+        
+        <div class="jobs-grid">
+            {% for job in jobs %}
+            <div class="job-card">
+                <h3>{{ job.role }}</h3>
+                <div class="category">{{ job.category }} | {{ job.experience_level }}</div>
+                <div class="description">{{ job.description }}</div>
+                
+                {% if job.core_skills %}
+                <div class="skills-required">
+                    <h4>Core Skills ({{ job.core_skills|length }}):</h4>
+                    <div class="skills-list">
+                        {% for skill in job.core_skills %}
+                        <span class="skill-badge critical-badge">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if job.secondary_skills %}
+                <div class="skills-required" style="margin-top: 10px;">
+                    <h4>Secondary Skills ({{ job.secondary_skills|length }}):</h4>
+                    <div class="skills-list">
+                        {% for skill in job.secondary_skills %}
+                        <span class="skill-badge">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="/" class="back-link">← Back to Home</a>
+        </div>
+        
+        <footer class="footer">
+            <p>AI Hiring Agent - Job Roles Database</p>
+        </footer>
+    </div>
+</body>
+</html>
+
