@@ -1,6 +1,6 @@
 """
 AI Hiring Agent - Flask Application
-Autonomous AI Hiring Agent using LLM, Machine Learning and Graph-Based Recommendation
+Resume analysis using NLP (TF-IDF + cosine similarity), skill extraction and graph-based role matching
 
 This application provides:
 - Resume Upload and Parsing
@@ -14,6 +14,8 @@ This application provides:
 
 import os
 import json
+import secrets
+import tempfile
 import logging
 from pathlib import Path
 
@@ -46,8 +48,11 @@ def create_app(config_name='default'):
     # Load configuration
     app.config.from_object(config[config_name])
     
-    # Ensure upload folder exists
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    # Sessions/flash messages need a secret key. If none is configured, use a
+    # random per-process key (sessions reset on restart) instead of crashing.
+    if not app.config.get('SECRET_KEY'):
+        logger.warning("SECRET_KEY not set - using a random key for this process")
+        app.config['SECRET_KEY'] = secrets.token_hex(32)
     
     # Initialize pipeline components (lazy loading)
     pipeline = None
@@ -107,125 +112,96 @@ def create_app(config_name='default'):
         """Home page - upload resume."""
         return render_template('index.html')
     
-    @app.route('/analyze', methods=['POST'])
-    def analyze():
-        """Analyze uploaded resume."""
+    def load_learning_resources():
+        """Load learning resources list (empty list on any problem)."""
         try:
-            # Check if file was uploaded
-            if 'resume_file' not in request.files:
-                flash('No file uploaded', 'error')
-                return redirect(url_for('index'))
-            
-            file = request.files['resume_file']
-            
-            if file.filename == '':
-                flash('No file selected', 'error')
-                return redirect(url_for('index'))
-            
-            # Validate file extension
-            allowed_ext = app.config['ALLOWED_EXTENSIONS']
-            if '.' not in file.filename or file.filename.rsplit('.', 1)[1].lower() not in allowed_ext:
-                flash(f'Invalid file type. Allowed: {", ".join(allowed_ext)}', 'error')
-                return redirect(url_for('index'))
-            
-            # Save and process file
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            with open(app.config['LEARNING_FILE'], 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            if isinstance(data, dict):
+                return data.get('learning_resources', [])
+        except (OSError, ValueError) as e:
+            logger.error(f"Error loading learning resources: {e}")
+        return []
+    
+    def analyze_upload(file, candidate_name):
+        """
+        Parse an uploaded resume and run the full pipeline.
+        
+        The upload is written to a temporary file with a random name and is
+        always deleted afterwards, so resumes are never kept on the server.
+        
+        Raises:
+            ValueError: invalid file type or unreadable/empty resume
+        """
+        ext = ''
+        if file.filename and '.' in file.filename:
+            ext = file.filename.rsplit('.', 1)[1].lower()
+        if ext not in app.config['ALLOWED_EXTENSIONS']:
+            allowed = ', '.join(sorted(app.config['ALLOWED_EXTENSIONS']))
+            raise ValueError(f'Invalid file type. Allowed: {allowed}')
+        
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            filepath = os.path.join(tmp_dir, f'resume.{ext}')
             file.save(filepath)
-            
-            # Extract text from resume
             try:
                 resume_text = extract_text_from_file(filepath)
             except Exception as e:
-                flash(f'Error parsing resume: {str(e)}', 'error')
-                return redirect(url_for('index'))
-            
-            # Get candidate name (optional form field)
-            candidate_name = request.form.get('candidate_name', 'Candidate')
-            
-            # Process through pipeline
-            p = get_pipeline()
-            results = p.process_resume(resume_text, candidate_name)
-            
-            # Load learning resources
-            try:
-                with open(app.config['LEARNING_FILE'], 'r') as f:
-                    learning_data = json.load(f)
-                    if isinstance(learning_data, dict) and 'learning_resources' in learning_data:
-                        learning_resources = learning_data['learning_resources']
-                    else:
-                        learning_resources = {}
-            except Exception as e:
-                logger.error(f"Error loading learning resources: {e}")
-                learning_resources = {}
-            
-            # Get learning recommendations
-            recommendations = p.get_learning_recommendations(results.get('skill_gaps', []), learning_resources)
-            results['learning_recommendations'] = recommendations
-            
-            # Generate interview questions
-            results['interview_questions'] = generate_interview_questions(results.get('extracted_skills', []))
-            
-            # Save results to session/storage for report page
-            # For simplicity, we'll pass data directly (in production, use sessions/database)
-            return render_template('report.html', results=results)
-            
+                raise ValueError(f'Error parsing resume: {e}')
+        
+        if not resume_text or not resume_text.strip():
+            raise ValueError('No readable text found in the resume (scanned image PDFs are not supported)')
+        
+        p = get_pipeline()
+        results = p.process_resume(resume_text, candidate_name or 'Candidate')
+        results['learning_recommendations'] = p.get_learning_recommendations(
+            results.get('skill_gaps', []), load_learning_resources()
+        )
+        results['interview_questions'] = generate_interview_questions(
+            results.get('extracted_skills', [])
+        )
+        return results
+    
+    @app.route('/analyze', methods=['POST'])
+    def analyze():
+        """Analyze uploaded resume and render the report."""
+        file = request.files.get('resume_file')
+        if file is None:
+            flash('No file uploaded', 'error')
+            return redirect(url_for('index'))
+        if file.filename == '':
+            flash('No file selected', 'error')
+            return redirect(url_for('index'))
+        
+        try:
+            results = analyze_upload(file, request.form.get('candidate_name', 'Candidate'))
+        except ValueError as e:
+            flash(str(e), 'error')
+            return redirect(url_for('index'))
         except Exception as e:
             logger.error(f"Error in analyze route: {e}", exc_info=True)
-            flash(f'Error processing resume: {str(e)}', 'error')
+            flash('Something went wrong while processing the resume', 'error')
             return redirect(url_for('index'))
+        
+        return render_template('report.html', results=results)
     
     @app.route('/api/analyze', methods=['POST'])
     def api_analyze():
-        """API endpoint for resume analysis (JSON API)."""
+        """JSON API: POST a resume as multipart field `resume_file`."""
+        file = request.files.get('resume_file')
+        if file is None:
+            return jsonify({'error': 'No file uploaded'}), 400
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
         try:
-            # Validate and extract resume
-            if 'resume_file' not in request.files:
-                return jsonify({'error': 'No file uploaded'}), 400
-            
-            file = request.files['resume_file']
-            
-            if file.filename == '':
-                return jsonify({'error': 'No file selected'}), 400
-            
-            # Save and process file
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
-            
-            # Extract text
-            try:
-                resume_text = extract_text_from_file(filepath)
-            except Exception as e:
-                return jsonify({'error': f'Error parsing resume: {str(e)}'}), 400
-            
-            # Get candidate name
-            candidate_name = request.form.get('candidate_name', 'Candidate')
-            
-            # Process through pipeline
-            p = get_pipeline()
-            results = p.process_resume(resume_text, candidate_name)
-            
-            # Add learning recommendations
-            try:
-                with open(app.config['LEARNING_FILE'], 'r') as f:
-                    learning_data = json.load(f)
-                    if isinstance(learning_data, dict) and 'learning_resources' in learning_data:
-                        learning_resources = learning_data['learning_resources']
-                    else:
-                        learning_resources = {}
-            except:
-                learning_resources = {}
-            
-            recommendations = p.get_learning_recommendations(results.get('skill_gaps', []), learning_resources)
-            results['learning_recommendations'] = recommendations
-            results['interview_questions'] = generate_interview_questions(results.get('extracted_skills', []))
-            
-            return jsonify(results)
-            
+            results = analyze_upload(file, request.form.get('candidate_name', 'Candidate'))
+        except ValueError as e:
+            return jsonify({'error': str(e)}), 400
         except Exception as e:
             logger.error(f"Error in API analyze: {e}", exc_info=True)
-            return jsonify({'error': str(e)}), 500
+            return jsonify({'error': 'Internal server error'}), 500
+        
+        return jsonify(results)
     
     @app.route('/skills')
     def skills():
@@ -267,7 +243,9 @@ def create_app(config_name='default'):
     def request_entity_too_large(error):
         """Handle file too large error."""
         max_size_mb = app.config['MAX_RESUME_FILE_SIZE'] / (1024 * 1024)
-        flash(f'File too large. Maximum size: {max_size_mb}MB', 'error')
+        if request.path.startswith('/api/'):
+            return jsonify({'error': f'File too large. Maximum size: {max_size_mb:g}MB'}), 413
+        flash(f'File too large. Maximum size: {max_size_mb:g}MB', 'error')
         return redirect(url_for('index'))
     
     @app.errorhandler(404)
@@ -413,14 +391,14 @@ def generate_interview_questions(skills: list) -> dict:
 
 
 # Create the Flask application
-app = create_app(os.environ.get('FLASK_ENV', 'default'))
+app = create_app(os.environ.get('FLASK_ENV', 'production'))
 
 
 if __name__ == '__main__':
     # Run the Flask application
     app.run(
         debug=app.config['DEBUG'],
-        host='0.0.0.0',
-        port=5000
+        host=os.environ.get('HOST', '127.0.0.1'),
+        port=int(os.environ.get('PORT', 5000))
     )
 

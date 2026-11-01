@@ -134,32 +134,38 @@ class ResumeMatcher:
             score = float(similarities[idx])
             
             # Calculate skill match
-            job_core_skills = set(job.get('core_skills', []))
-            job_secondary_skills = set(job.get('secondary_skills', []))
-            job_all_skills = job_core_skills | job_secondary_skills
-            
+            # Keep a stable order (core skills first) so results are
+            # deterministic and the most important gaps are listed first.
+            core_list = list(dict.fromkeys(job.get('core_skills', [])))
+            secondary_list = [
+                s for s in dict.fromkeys(job.get('secondary_skills', []))
+                if s not in core_list
+            ]
+            ordered_job_skills = core_list + secondary_list
+
             matched_skills = []
             missing_skills = []
-            
-            if resume_skills:
-                resume_skills_set = set(s.lower() for s in resume_skills)
-                matched = job_all_skills & resume_skills_set
-                missing = job_all_skills - resume_skills_set
-                matched_skills = list(matched)
-                missing_skills = list(missing)
-            
+
+            resume_skills_set = set(s.lower() for s in (resume_skills or []))
+            for skill in ordered_job_skills:
+                if skill.lower() in resume_skills_set:
+                    matched_skills.append(skill)
+                else:
+                    missing_skills.append(skill)
+
             # Calculate match percentage
-            if job_all_skills:
-                match_percentage = len(matched_skills) / len(job_all_skills)
+            if ordered_job_skills:
+                match_percentage = len(matched_skills) / len(ordered_job_skills)
             else:
                 match_percentage = 0
-            
+
             result = {
                 'role': job.get('role'),
                 'similarity_score': round(score, 4),
                 'match_percentage': round(match_percentage * 100, 2),
                 'matched_skills': matched_skills,
                 'missing_skills': missing_skills,
+                'core_skills': core_list,
                 'experience_level': job.get('experience_level'),
                 'description': job.get('description')
             }

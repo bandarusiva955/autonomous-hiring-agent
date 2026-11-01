@@ -1,281 +1,101 @@
+# Autonomous AI Hiring Agent
 
+A resume analysis web app that parses a resume (PDF or DOCX), extracts skills, matches the candidate to job roles, finds skill gaps, and produces an evaluation report with learning resources and interview questions.
 
-# Project Overview
+> **Status:** v1 is a classical NLP/ML pipeline (TF-IDF + cosine similarity + graph modeling). It does **not** call an LLM. A multi-agent LLM layer (LangGraph/CrewAI) and embedding-based matching are planned for v2 — see the [Roadmap](#roadmap).
 
-Autonomous AI Hiring Agent is an intelligent recruitment assistant designed to automate resume analysis and candidate evaluation using machine learning and graph-based talent intelligence.
+## What it does
 
-The system simulates a modern **AI-powered Applicant Tracking System (ATS)** while extending its capabilities with skill gap analysis, learning recommendations, and interview preparation support.
+1. **Parse** a PDF or DOCX resume into text
+2. **Extract skills** against a 626-skill database across 20 categories
+3. **Match roles** with TF-IDF vectors and cosine similarity against 30 job profiles
+4. **Model relationships** as a candidate-skill-job graph with NetworkX
+5. **Score** the candidate (Strong Hire / Consider / Reject) from skill match, skill count, technical ratio and critical-skill coverage
+6. **Report** skill gaps (core skills first), learning resources and interview questions
 
-Users can upload resumes in **PDF or DOCX format**, and the system automatically extracts relevant information, identifies candidate skills, matches candidates with suitable job roles, and generates a complete hiring evaluation report.
+## Tech stack
 
-This project demonstrates how **Artificial Intelligence, Natural Language Processing, and Graph-based modeling** can be used to support data-driven recruitment and career development.
+Python, Flask, scikit-learn, NetworkX, PyPDF2, python-docx, gunicorn, pytest, Docker
 
----
-
-# Key Features
-
-### Resume Upload and Parsing
-
-Supports PDF and DOCX resumes and extracts raw text for analysis.
-
-### Skill Extraction
-
-Identifies technical and professional skills using a global skills dataset.
-
-### Job Matching
-
-Uses **TF-IDF vectorization** and **Cosine Similarity** to match candidates with relevant job roles.
-
-### Graph-Based Talent Analysis
-
-Builds a **candidate–skill–job relationship graph** using NetworkX to model talent relationships.
-
-### Skill Gap Detection
-
-Detects missing skills required for specific job roles.
-
-### Learning Recommendation System
-
-Suggests learning resources based on missing skills.
-
-### Interview Question Generator
-
-Generates interview questions tailored to detected candidate skills.
-
-### Candidate Evaluation Report
-
-Produces a structured hiring report including skill match score, missing skills, and recommendations.
-
----
-
-# System Architecture
+## Project structure
 
 ```
-Resume Upload
-      │
-      ▼
-Resume Parsing
-      │
-      ▼
-Skill Extraction
-      │
-      ▼
-TF-IDF Feature Vectorization
-      │
-      ▼
-Cosine Similarity Matching
-      │
-      ▼
-Candidate–Job Graph Analysis
-      │
-      ▼
-Skill Gap Detection
-      │
-      ▼
-Learning Recommendation
-      │
-      ▼
-Interview Question Generation
-      │
-      ▼
-Final Hiring Evaluation Report
-```
-
----
-
-# Technology Stack
-
-**Programming Language**
-
-Python
-
-**Framework**
-
-Flask
-
-**Machine Learning**
-
-scikit-learn
-TF-IDF Vectorization
-Cosine Similarity
-
-**Graph Analysis**
-
-NetworkX
-
-**Resume Parsing**
-
-PyPDF2
-python-docx
-
-**Frontend**
-
-HTML
-CSS
-
-**Data Storage**
-
-JSON datasets
-
----
-
-# Project Structure
-
-```
-ai-hiring-agent/
-
-app.py
-config.py
-resume_parser.py
-requirements.txt
-
+app.py                  Flask app factory, routes, interview question bank
+config.py               Settings (dev / production)
 data/
-skills_master.json
-jobs.json
-learning_resources.json
-
+  resume_parser.py      PDF and DOCX text extraction
+  skills_master.json    Skills database
+  jobs.json             Job profiles (core + secondary skills)
+  learning_resources.json
 engine/
-pipeline.py
-skill_extractor.py
-resume_matcher.py
-hiring_scorer.py
-graph_builder.py
-
-learning/
-recommender.py
-
-report/
-report_generator.py
-
-models/
-coding_evaluator.py
-
-templates/
-index.html
-report.html
+  pipeline.py           Orchestrates the full analysis
+  skill_extractor.py    Skill extraction
+  resume_matcher.py     TF-IDF + cosine similarity matching
+  hiring_scorer.py      Scoring and hiring decision
+  graph_builder.py      NetworkX graph
+templates/              HTML templates
+tests/                  pytest suite
+docs/sample_report.html Example output
+Dockerfile
 ```
 
----
+## Run locally
 
-# Installation
-
-Clone the repository
-
-git clone https://github.com/yourusername/ai-hiring-agent.git
-
-Navigate to the project folder
-
-cd ai-hiring-agent
-
-Install dependencies
-
+```bash
+git clone https://github.com/bandarusiva955/autonomous-hiring-agent.git
+cd autonomous-hiring-agent
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 
-Run the application
+FLASK_ENV=development python app.py                 # http://127.0.0.1:5000
+```
 
-python app.py
+Windows PowerShell: `$env:FLASK_ENV="development"; python app.py`
 
-Open the application in your browser:
+## Run with Docker
 
-http://localhost:5000
+```bash
+docker build -t hiring-agent .
+docker run -p 8000:8000 -e SECRET_KEY=change-me hiring-agent
+# http://localhost:8000
+```
 
----
+## API
 
-# Demo
+```bash
+curl -F "resume_file=@resume.pdf" -F "candidate_name=Siva" http://localhost:8000/api/analyze
+```
 
-## Resume Upload Interface
+Returns JSON with extracted skills, job matches, hiring score, skill gaps, learning recommendations and interview questions. Other routes: `GET /health`, `/skills`, `/jobs`.
 
-Users can upload resumes in **PDF or DOCX format** for automated analysis.
+## Privacy and security notes
 
-## Candidate Evaluation Report
+- Uploaded resumes are parsed from a temporary file that is deleted immediately; nothing is stored.
+- Uploads are limited to 10 MB and to `.pdf` / `.docx`.
+- Set `SECRET_KEY` in production. Debug mode is off unless `FLASK_ENV=development` and `FLASK_DEBUG=1`.
 
-The system generates a detailed report including:
+## Tests
 
-Detected skills
-Best matching job role
-Similarity score
-Hiring recommendation
-Skill gaps
-Learning recommendations
-Interview questions
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
 
-## Graph-Based Talent Analysis
+## Known limitations
 
-The system builds a **candidate–skill–job graph** to represent relationships between candidates, skills, and job roles.
+- Skill extraction is keyword-based, so it can miss synonyms and context
+- Scanned/image-only PDFs are not supported (no OCR)
+- Job profiles and the skills list are static JSON files
+- Interview questions come from a fixed question bank
 
----
+## Roadmap
 
-# Example Output
+- [ ] Embedding-based semantic matching, evaluated against the TF-IDF baseline on a labeled resume set
+- [ ] LLM agents (resume parser, JD analyzer, matcher, interview coach) orchestrated with LangGraph or CrewAI
+- [ ] Paste-a-job-description matching (not only the built-in 30 roles)
+- [ ] Deployed live demo
+- [ ] Chrome extension that scores the job page you are viewing
 
-Candidate Name: John Doe
+## License
 
-Detected Skills
-Python
-Machine Learning
-SQL
-TensorFlow
-
-Best Matching Role
-Machine Learning Engineer
-
-Match Score
-0.83
-
-Hiring Decision
-Strong Hire
-
-Missing Skills
-Docker
-Kubernetes
-
-Recommended Learning
-Docker Certification Course
-Kubernetes Fundamentals
-
-Suggested Interview Questions
-
-Explain gradient descent
-What is overfitting in machine learning?
-
----
-
-# Use Cases
-
-AI-powered recruitment automation
-Resume analysis systems
-Talent intelligence platforms
-Career guidance tools
-HR analytics applications
-
----
-
-# Future Improvements
-
-Semantic resume matching using sentence embeddings
-Larger global skills dataset
-Candidate ranking dashboard
-Interactive graph visualization
-Integration with job portals
-Automated interview scheduling
-
----
-
-# Contributing
-
-Contributions are welcome.
-
-If you would like to improve this project, please fork the repository and submit a pull request.
-
-Suggestions and improvements are highly appreciated.
-
----
-
-# Author
-
-Developed as part of an Artificial Intelligence and Machine Learning project focused on building intelligent recruitment and talent analysis systems.
-
----
-
-# License
-
-This project is developed for educational and research purposes.
+Educational and research use.

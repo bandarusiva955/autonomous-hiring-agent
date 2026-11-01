@@ -135,12 +135,13 @@ class ResumeProcessingPipeline:
         
         best_match = job_matches[0]
         missing = best_match.get('missing_skills', [])
-        
+        core_skills = set(best_match.get('core_skills', []))
+
         skill_gaps = []
-        for skill in missing[:5]:  # Top 5 missing skills
+        for skill in missing[:5]:  # Top 5 missing skills (core skills come first)
             skill_gaps.append({
                 'skill': skill,
-                'importance': 'high' if skill in best_match.get('matched_skills', []) else 'medium'
+                'importance': 'high' if skill in core_skills else 'medium'
             })
         
         return skill_gaps

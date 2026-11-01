@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+uploads/
+*.pdf
+*.docx
+.pytest_cache/
+.DS_Store
