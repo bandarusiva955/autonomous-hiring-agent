@@ -52,6 +52,8 @@ FLASK_ENV=development python app.py                 # http://127.0.0.1:5000
 
 Windows PowerShell: `$env:FLASK_ENV="development"; python app.py`
 
+**Windows, one step:** `powershell -ExecutionPolicy Bypass -File .\setup.ps1` creates the virtual environment, installs dependencies, checks they load, and starts the app. Keep the project outside OneDrive (for example `C:\dev`) - OneDrive sync can corrupt virtual environments.
+
 ## Run with Docker
 
 ```bash
