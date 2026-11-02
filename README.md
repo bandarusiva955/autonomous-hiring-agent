@@ -96,6 +96,10 @@ Windows PowerShell: `$env:FLASK_ENV="development"; python app.py`
 
 **Windows, one step:** `powershell -ExecutionPolicy Bypass -File .\setup.ps1` creates the virtual environment, installs dependencies, checks they load, and starts the app. Keep the project outside OneDrive (for example `C:\dev`) - OneDrive sync can corrupt virtual environments.
 
+## Deploy
+
+`render.yaml` and [docs/DEPLOY.md](docs/DEPLOY.md) deploy the app to Render's free plan in a few clicks, with notes on what the free plan does and does not give you.
+
 ## Run with Docker
 
 ```bash
@@ -140,7 +144,7 @@ pytest
 - [x] Chatbot with optional LLM mode
 - [x] Chrome extension MVP
 - [ ] LLM agents (resume parser, JD analyzer, matcher, interview coach) orchestrated with LangGraph or CrewAI
-- [ ] Deployed live demo
+- [ ] Deployed live demo (config ready: see Deploy)
 - [ ] Accounts, a free/Pro plan and payments; Chrome Web Store listing
 
 ## License

@@ -17,11 +17,10 @@ RUN useradd --create-home appuser \
     && chown -R appuser:appuser /app/instance
 USER appuser
 
-# Screening results (SQLite) live here; mount a volume to keep them across restarts:
+# Screening results (SQLite) live in /app/instance. To keep them across restarts mount a volume:
 #   docker run -v hiring-data:/app/instance ...
-VOLUME ["/app/instance"]
 
 EXPOSE 8000
 
 # Set SECRET_KEY at runtime: docker run -e SECRET_KEY=... -v hiring-data:/app/instance -p 8000:8000 hiring-agent
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT} --workers 2 --threads 4 --timeout 300 app:app"]
+CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT} --workers ${WEB_CONCURRENCY:-2} --threads 4 --timeout 300 app:app"]

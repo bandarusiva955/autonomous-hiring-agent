@@ -16,11 +16,13 @@ import os
 import json
 import secrets
 import tempfile
+import time
 import logging
 from pathlib import Path
 
 # Flask imports
 from flask import Flask, render_template, request, jsonify, flash, redirect, url_for
+from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.utils import secure_filename
 
 # Configure logging
@@ -49,6 +51,37 @@ from routes_chat import bp as chat_bp
 from engine.chatbot import CareerChatbot, RateLimiter
 
 
+def _shared_secret_key(directory):
+    """
+    Return a secret key shared by every worker process.
+    
+    Used only when SECRET_KEY is not set. The key is created once (atomically)
+    in `directory` so all gunicorn workers sign sessions with the same key;
+    random per-process keys would log users out whenever a request lands on a
+    different worker.
+    """
+    path = os.path.join(directory, '.secret_key')
+    try:
+        os.makedirs(directory, exist_ok=True)
+        try:
+            fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        except FileExistsError:
+            for _ in range(50):  # another worker may still be writing it
+                with open(path, 'r', encoding='utf-8') as f:
+                    key = f.read().strip()
+                if key:
+                    return key
+                time.sleep(0.05)
+            raise OSError('secret key file is empty')
+        key = secrets.token_hex(32)
+        with os.fdopen(fd, 'w', encoding='utf-8') as f:
+            f.write(key)
+        return key
+    except OSError as e:
+        logger.warning(f"Could not persist a secret key ({e}); using a random per-process key")
+        return secrets.token_hex(32)
+
+
 def create_app(config_name='default', overrides=None):
     """Application factory pattern for Flask app."""
     app = Flask(__name__)
@@ -57,15 +90,27 @@ def create_app(config_name='default', overrides=None):
     app.config.from_object(config[config_name])
     app.config.update(overrides or {})
     
-    # Sessions/flash messages need a secret key. If none is configured, use a
-    # random per-process key (sessions reset on restart) instead of crashing.
-    if not app.config.get('SECRET_KEY'):
-        logger.warning("SECRET_KEY not set - using a random key for this process")
-        app.config['SECRET_KEY'] = secrets.token_hex(32)
+    # Behind a reverse proxy, trust one hop of X-Forwarded-* (real client IP, https scheme)
+    if app.config.get('TRUST_PROXY'):
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
     
     # Results database for bulk screening (SQLite file)
     db_path = app.config.get('DATABASE') or os.path.join(app.instance_path, 'screening.db')
     os.makedirs(os.path.dirname(os.path.abspath(db_path)), exist_ok=True)
+    
+    # Sessions/flash messages need a secret key. Set SECRET_KEY in production; if it is
+    # missing, generate one and share it between workers through a file next to the database.
+    if not app.config.get('SECRET_KEY'):
+        logger.warning("SECRET_KEY not set - generating one (set SECRET_KEY for stable sessions across restarts)")
+        app.config['SECRET_KEY'] = _shared_secret_key(os.path.dirname(os.path.abspath(db_path)))
+    
+    @app.after_request
+    def security_headers(response):
+        response.headers.setdefault('X-Content-Type-Options', 'nosniff')
+        response.headers.setdefault('X-Frame-Options', 'SAMEORIGIN')
+        # Batch links are private URLs: never leak them to other sites through the Referer header
+        response.headers.setdefault('Referrer-Policy', 'same-origin')
+        return response
     store = ScreeningStore(db_path)
     roadmap_library = RoadmapLibrary()
     

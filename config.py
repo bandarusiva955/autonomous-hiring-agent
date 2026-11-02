@@ -15,6 +15,14 @@ class Config:
     DEBUG = False
     SECRET_KEY = os.environ.get('SECRET_KEY')
 
+    # Deployment behind a reverse proxy (Render, Railway, nginx, ...): set TRUST_PROXY=1 so the
+    # real visitor IP (used by rate limits) and https scheme are read from X-Forwarded-* headers.
+    # Only enable it when a trusted proxy is really in front, otherwise clients can fake their IP.
+    TRUST_PROXY = os.environ.get('TRUST_PROXY', '0') == '1'
+    SESSION_COOKIE_SECURE = os.environ.get('COOKIE_SECURE', '0') == '1'   # set to 1 when served over https
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+
     # File upload settings
     MAX_RESUME_FILE_SIZE = 10 * 1024 * 1024  # 10MB
     # Flask enforces this one (returns 413 when exceeded)
@@ -22,7 +30,7 @@ class Config:
     ALLOWED_EXTENSIONS = {'pdf', 'docx'}
 
     # Bulk (HR) screening
-    BULK_MAX_FILES = 500                         # resumes per batch
+    BULK_MAX_FILES = int(os.environ.get('BULK_MAX_FILES', 500))   # resumes per batch
     BULK_MAX_UPLOAD = 300 * 1024 * 1024          # request size limit for /bulk
     BULK_MAX_TOTAL_BYTES = 500 * 1024 * 1024     # total resume bytes per batch (incl. ZIP contents)
     RETENTION_DAYS = 30                          # batches older than this are purged

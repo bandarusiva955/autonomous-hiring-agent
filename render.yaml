@@ -1,0 +1,25 @@
+# Render Blueprint: one-click deploy of the web app from the Dockerfile.
+# Free plan: sleeps after 15 min idle (about 1 min to wake) and has no persistent disk,
+# so saved batches are lost when it restarts. Good for a demo; see docs/DEPLOY.md to go beyond it.
+services:
+  - type: web
+    name: ai-hiring-agent
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true          # Render creates a random value once and keeps it
+      - key: TRUST_PROXY
+        value: "1"                   # Render terminates TLS and forwards the real client IP
+      - key: COOKIE_SECURE
+        value: "1"
+      - key: WEB_CONCURRENCY
+        value: "1"                   # one worker keeps memory low on the free plan
+      - key: BULK_MAX_FILES
+        value: "100"                 # smaller public-demo limit
+      - key: ANTHROPIC_API_KEY       # optional: enables LLM answers in the chatbot
+        sync: false
