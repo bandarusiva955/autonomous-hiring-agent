@@ -143,3 +143,36 @@ def score_resume(text: str, target: Dict, extractor, matcher, scorer) -> Dict:
         'matched': job_match.get('matched_skills', []),
         'missing': job_match.get('missing_skills', []),
     }
+
+
+def match_skills_to_jd(skills: List[str], jd_text: str, extractor) -> Dict:
+    """
+    Compare a person's skill list with the skills found in a job description.
+
+    Raises:
+        ValueError: with a message safe to show to the user
+    """
+    jd_text = (jd_text or '').strip()[:MAX_JD_CHARS]
+    if len(jd_text) < 30:
+        raise ValueError('The job description is too short')
+    required = list(dict.fromkeys(s['skill'] for s in extractor.extract_skills(jd_text)))
+    if not required:
+        raise ValueError('No recognizable skills were found on this page')
+
+    have = {s.strip().lower() for s in skills if isinstance(s, str) and s.strip()}
+    matched = [s for s in required if s.lower() in have]
+    missing = [s for s in required if s.lower() not in have]
+    pct = round(100 * len(matched) / len(required))
+    if pct >= 70:
+        verdict = 'Strong match'
+    elif pct >= 40:
+        verdict = 'Good match'
+    else:
+        verdict = 'Low match'
+    return {
+        'match_percentage': pct,
+        'verdict': verdict,
+        'required_skills': required,
+        'matched': matched,
+        'missing': missing,
+    }

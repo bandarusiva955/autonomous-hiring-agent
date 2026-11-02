@@ -45,6 +45,8 @@ from engine.roadmaps import RoadmapLibrary
 from engine.store import ScreeningStore
 from routes_hr import bp as hr_bp
 from routes_roadmaps import bp as roadmaps_bp
+from routes_chat import bp as chat_bp
+from engine.chatbot import CareerChatbot, RateLimiter
 
 
 def create_app(config_name='default', overrides=None):
@@ -125,9 +127,16 @@ def create_app(config_name='default', overrides=None):
         'get_pipeline': get_pipeline,
         'parse_file': extract_text_from_file,
         'interview_questions': lambda skills: generate_interview_questions(skills),
+        'get_extractor': get_skill_extractor,
+        'chatbot': CareerChatbot(
+            roadmap_library, lambda skills: generate_interview_questions(skills),
+            api_key=app.config.get('ANTHROPIC_API_KEY'), model=app.config['CHAT_MODEL']),
+        'chat_limiter': RateLimiter(app.config['CHAT_RATE_LIMIT']),
+        'match_limiter': RateLimiter(app.config['MATCH_RATE_LIMIT']),
     }
     app.register_blueprint(hr_bp)
     app.register_blueprint(roadmaps_bp)
+    app.register_blueprint(chat_bp)
     
     # ==================== Routes ====================
     

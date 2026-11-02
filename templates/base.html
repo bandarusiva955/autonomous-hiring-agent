@@ -21,5 +21,7 @@
         {% endwith %}
         {% block content %}{% endblock %}
     </main>
+<script>window.HIRING_CHAT_CONTEXT = {% block chat_ctx %}null{% endblock %};</script>
+    <script src="{{ url_for('static', filename='chat.js') }}" defer></script>
 </body>
 </html>

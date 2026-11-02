@@ -496,6 +496,16 @@
             <a href="/" class="btn">Analyze Another Resume</a>
         </div>
     </div>
+<script>
+    window.HIRING_CHAT_CONTEXT = {{ {
+        'role': results.best_match.role if results.best_match else '',
+        'skills': results.extracted_skills,
+        'matched': results.best_match.matched_skills if results.best_match else [],
+        'missing': results.best_match.missing_skills if results.best_match else [],
+        'match_pct': results.best_match.match_percentage if results.best_match else None
+    }|tojson }};
+    </script>
+    <script src="/static/chat.js" defer></script>
 </body>
 </html>
 

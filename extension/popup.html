@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Job Match Checker</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <header>
+        <strong>AI Job Match Checker</strong>
+        <button id="settings-toggle" class="link" type="button">Settings</button>
+    </header>
+
+    <section id="settings" hidden>
+        <label for="api-url">Server address</label>
+        <input id="api-url" type="text" placeholder="http://127.0.0.1:5000">
+        <p class="hint">Where your AI Hiring Agent app is running. The job text and your skills are sent only to this address.</p>
+        <button id="save-settings" type="button" class="secondary">Save</button>
+    </section>
+
+    <section id="skills-section">
+        <label for="skills">Your skills <span class="hint">(comma separated)</span></label>
+        <textarea id="skills" rows="3" placeholder="python, sql, git"></textarea>
+        <div class="row">
+            <button id="import-btn" type="button" class="secondary">Import from resume</button>
+            <span id="skills-count" class="hint"></span>
+        </div>
+        <input id="resume-file" type="file" accept=".pdf,.docx" hidden>
+    </section>
+
+    <button id="check-btn" type="button" class="primary">Check this job</button>
+    <p id="status" class="status" role="status"></p>
+
+    <section id="result" hidden>
+        <div class="score-row">
+            <div id="pct" class="pct">0%</div>
+            <div><div id="verdict" class="verdict"></div><div id="job-title" class="hint"></div></div>
+        </div>
+        <div class="bar"><span id="bar-fill"></span></div>
+        <h3>You have</h3>
+        <div id="matched" class="chips"></div>
+        <h3>Missing</h3>
+        <div id="missing" class="chips"></div>
+        <p id="roadmap" class="roadmap"></p>
+    </section>
+
+    <section id="chat">
+        <h3>Ask the assistant</h3>
+        <div id="chat-log" class="chat-log"></div>
+        <form id="chat-form">
+            <input id="chat-input" type="text" maxlength="500" placeholder="e.g. What should I learn first?" aria-label="Message">
+            <button type="submit" class="secondary">Send</button>
+        </form>
+    </section>
+
+    <script src="popup.js"></script>
+</body>
+</html>

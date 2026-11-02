@@ -8,6 +8,8 @@ A resume analysis web app that parses a resume (PDF or DOCX), extracts skills, m
 
 - **Single resume analysis**: upload one PDF/DOCX, get skills, best-fit roles, gaps, learning resources, interview questions and a suggested roadmap
 - **HR bulk screening** (`/bulk`): upload hundreds of resumes at once (many files or a ZIP), rank them against a built-in role, your own pasted job description, or "best fit", then filter, review and export
+- **Career assistant chatbot**: floating chat on every page that answers from your own analysis (skill gaps, roadmaps, interview questions, resume tips). Works with no setup; set `ANTHROPIC_API_KEY` to let it answer open-ended questions with Claude (it falls back to the built-in answers if the API is unavailable)
+- **Chrome extension** (`extension/`): one click on any job page shows your match %, missing skills and a roadmap, with a chat box. See [extension/README.md](extension/README.md)
 - **Career roadmaps** (`/roadmaps`): 8 step-by-step learning paths that show your progress when you enter the skills you already have
 
 ## What it does
@@ -44,10 +46,13 @@ engine/
   store.py              SQLite storage for batches
   batch_runner.py       Background batch processing
   roadmaps.py           Roadmap loading and personalization
+  chatbot.py            Chatbot (built-in answers + optional Claude)
 templates/              HTML templates
 static/                 CSS
 routes_hr.py            Bulk screening routes
 routes_roadmaps.py      Roadmap routes
+routes_chat.py          Chat and job-match JSON API
+extension/              Chrome extension (Manifest V3)
 tests/                  pytest suite
 docs/sample_report.html Example output
 Dockerfile
@@ -64,6 +69,13 @@ Dockerfile
 Limits are in `config.py` (`BULK_MAX_FILES`, `BULK_MAX_UPLOAD`, `RETENTION_DAYS`). Only names, emails, skills and scores are stored (SQLite); resume files are deleted after processing, and batches are purged after 30 days.
 
 > Scores are a screening aid based on keyword skill matching and text similarity. They do not evaluate experience quality or fit, and should not be the sole basis for rejecting anyone.
+
+## Chatbot and extension API
+
+- `POST /api/chat` with `{"message": "...", "context": {"skills": [], "missing": [], "role": ""}, "history": []}` returns `{"reply", "links", "suggestions", "source"}`. Limited to 20 messages per minute per IP.
+- `POST /api/match-jd` with `{"skills": [...], "jd_text": "..."}` returns the match percentage, matched/missing skills and a suggested roadmap. Limited to 60 per minute per IP.
+- The Chrome extension origin is allowed by CORS automatically; add your own site with `CORS_ORIGINS=https://site1,https://site2`.
+- Set `ANTHROPIC_API_KEY` (and optionally `CHAT_MODEL`) to enable LLM answers. The key stays on the server. Chat calls cost money, so keep the rate limit on, and if you run several servers use a shared limiter (for example Redis).
 
 ## Roadmaps
 
@@ -125,9 +137,11 @@ pytest
 ## Roadmap
 
 - [ ] Embedding-based semantic matching, evaluated against the TF-IDF baseline on a labeled resume set
+- [x] Chatbot with optional LLM mode
+- [x] Chrome extension MVP
 - [ ] LLM agents (resume parser, JD analyzer, matcher, interview coach) orchestrated with LangGraph or CrewAI
 - [ ] Deployed live demo
-- [ ] Chrome extension that scores the job page you are viewing
+- [ ] Accounts, a free/Pro plan and payments; Chrome Web Store listing
 
 ## License
 

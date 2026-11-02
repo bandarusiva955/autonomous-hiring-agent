@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}{{ person.name or person.filename }} - AI Hiring Agent{% endblock %}
+{% block chat_ctx %}{{ {'role': person.role, 'skills': person.skills, 'matched': person.matched, 'missing': person.missing, 'match_pct': person.match_pct}|tojson }}{% endblock %}
 {% block content %}
 <a class="back" href="{{ url_for('hr.view', batch_id=batch.id) }}">&larr; Back to {{ batch.label }}</a>
 

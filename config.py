@@ -27,6 +27,12 @@ class Config:
     BULK_MAX_TOTAL_BYTES = 500 * 1024 * 1024     # total resume bytes per batch (incl. ZIP contents)
     RETENTION_DAYS = 30                          # batches older than this are purged
     MAX_FORM_PARTS = 2000                        # allow many files in one upload
+    # Chatbot: works without a key (built-in answers); set ANTHROPIC_API_KEY for open-ended LLM answers
+    ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
+    CHAT_MODEL = os.environ.get('CHAT_MODEL', 'claude-sonnet-5-5')
+    CHAT_RATE_LIMIT = 20                         # chat messages per minute per IP
+    MATCH_RATE_LIMIT = 60                        # job checks per minute per IP
+    CORS_ORIGINS = [o for o in os.environ.get('CORS_ORIGINS', '').split(',') if o]  # chrome-extension:// is always allowed
     DATABASE = os.environ.get('DATABASE_PATH')   # defaults to <instance>/screening.db
 
     # TF-IDF settings
