@@ -21,6 +21,14 @@ class Config:
     MAX_CONTENT_LENGTH = MAX_RESUME_FILE_SIZE
     ALLOWED_EXTENSIONS = {'pdf', 'docx'}
 
+    # Bulk (HR) screening
+    BULK_MAX_FILES = 500                         # resumes per batch
+    BULK_MAX_UPLOAD = 300 * 1024 * 1024          # request size limit for /bulk
+    BULK_MAX_TOTAL_BYTES = 500 * 1024 * 1024     # total resume bytes per batch (incl. ZIP contents)
+    RETENTION_DAYS = 30                          # batches older than this are purged
+    MAX_FORM_PARTS = 2000                        # allow many files in one upload
+    DATABASE = os.environ.get('DATABASE_PATH')   # defaults to <instance>/screening.db
+
     # TF-IDF settings
     TFIDF_MAX_FEATURES = 5000
     TFIDF_MIN_DF = 1

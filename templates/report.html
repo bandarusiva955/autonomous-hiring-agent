@@ -425,6 +425,17 @@
                 {% endif %}
             </div>
             
+            <!-- Recommended Roadmap Section -->
+            {% if results.recommended_roadmap %}
+            <div class="section">
+                <h3>🗺️ Recommended Roadmap: {{ results.recommended_roadmap.title }}</h3>
+                <p>You already cover {{ results.recommended_roadmap.skills_known }} of {{ results.recommended_roadmap.skills_total }} skills ({{ results.recommended_roadmap.progress }}%) in this {{ results.recommended_roadmap.duration_weeks }}-week path.
+                {% if results.recommended_roadmap.next_stage %}Next stage: <strong>{{ results.recommended_roadmap.next_stage }}</strong>.{% endif %}</p>
+                <p style="margin-top:10px"><a href="/roadmaps/{{ results.recommended_roadmap.slug }}?skills={{ results.extracted_skills|join(',')|urlencode }}">See the full roadmap with your progress &rarr;</a>
+                &middot; <a href="/roadmaps">All roadmaps</a></p>
+            </div>
+            {% endif %}
+            
             <!-- Interview Questions Section -->
             <div class="section">
                 <h3>❓ Suggested Interview Questions</h3>

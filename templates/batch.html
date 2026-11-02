@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}{{ batch.label }} - AI Hiring Agent{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('hr.bulk_form') }}">&larr; New batch</a>
+
+<div class="topbar">
+    <div>
+        <h1>{{ batch.label }}</h1>
+        <p class="sub" style="margin-bottom:0">Scored against: <strong>{{ batch.target_label }}</strong>
+            {% if batch.duplicates %} &middot; {{ batch.duplicates }} duplicate file(s) skipped{% endif %}
+        </p>
+    </div>
+    <div class="actions">
+        <a class="btn secondary" href="{{ url_for('hr.export_csv', batch_id=batch.id) }}">Export CSV</a>
+        <form method="post" action="{{ url_for('hr.delete', batch_id=batch.id) }}"
+              onsubmit="return confirm('Delete this batch and all its results? This cannot be undone.');">
+            <button class="btn danger" type="submit">Delete batch</button>
+        </form>
+    </div>
+</div>
+
+{% if batch.status == 'processing' %}
+<div class="card" id="progress-card">
+    <h2>Processing resumes&hellip;</h2>
+    <div class="progress"><span id="progress-bar" style="width: {{ percent }}%"></span></div>
+    <p class="muted small" style="margin-top:8px"><span id="progress-text">{{ batch.done }} of {{ batch.total }} done</span>. This page updates when it finishes; you can leave and come back using the link in "Your recent batches".</p>
+</div>
+{% elif batch.status == 'interrupted' %}
+<div class="flash error">Processing stopped before finishing (the server may have restarted). Results below are partial; upload the remaining resumes as a new batch.</div>
+{% elif batch.status == 'failed' %}
+<div class="flash error">Processing failed. Results below are partial.</div>
+{% endif %}
+
+<div class="stats">
+    <div class="stat"><div class="num">{{ batch.total }}</div><div class="lbl">Files in batch</div></div>
+    <div class="stat"><div class="num">{{ stats.strong_hire }}</div><div class="lbl">Strong hire</div></div>
+    <div class="stat"><div class="num">{{ stats.consider }}</div><div class="lbl">Consider</div></div>
+    <div class="stat"><div class="num">{{ stats.reject }}</div><div class="lbl">Reject</div></div>
+    <div class="stat"><div class="num">{{ "%.0f"|format(stats.average_score * 100) }}%</div><div class="lbl">Average score</div></div>
+    {% if batch.failed %}<div class="stat"><div class="num">{{ batch.failed }}</div><div class="lbl">Could not read</div></div>{% endif %}
+</div>
+
+<form class="card" method="get" action="{{ url_for('hr.view', batch_id=batch.id) }}">
+    <div class="filters">
+        <div><label for="q">Search</label><input type="text" id="q" name="q" value="{{ filters.q }}" placeholder="Name, email or file"></div>
+        <div><label for="must_have">Must have skills</label><input type="text" id="must_have" name="must_have" value="{{ filters.must_have }}" placeholder="python, sql"></div>
+        <div><label for="min_score">Min score %</label><input type="number" id="min_score" name="min_score" min="0" max="100" value="{{ filters.min_score }}"></div>
+        <div>
+            <label for="decision">Decision</label>
+            <select id="decision" name="decision">
+                <option value="">All</option>
+                {% for d in ['Strong Hire', 'Consider', 'Reject'] %}
+                    <option value="{{ d }}" {% if filters.decision == d %}selected{% endif %}>{{ d }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="sort">Sort by</label>
+            <select id="sort" name="sort">
+                <option value="score" {% if filters.sort == 'score' %}selected{% endif %}>Score</option>
+                <option value="match" {% if filters.sort == 'match' %}selected{% endif %}>Skill match</option>
+                <option value="name" {% if filters.sort == 'name' %}selected{% endif %}>Name</option>
+            </select>
+        </div>
+        <div><button class="btn" type="submit">Apply</button></div>
+    </div>
+</form>
+
+<div class="card">
+    <p class="muted small" style="margin-bottom:10px">{{ total }} result{{ '' if total == 1 else 's' }}</p>
+    {% if rows %}
+    <div class="table-wrap">
+    <table>
+        <thead>
+            <tr><th>#</th><th>Candidate</th><th>Score</th><th>Decision</th><th>Scored against</th><th>Skill match</th><th>Top missing skills</th></tr>
+        </thead>
+        <tbody>
+        {% for r in rows %}
+            <tr>
+                <td>{% if r.status == 'ok' %}{{ rank_offset + loop.index }}{% else %}&ndash;{% endif %}</td>
+                <td>
+                    {% if r.status == 'ok' %}
+                        <a href="{{ url_for('hr.candidate', batch_id=batch.id, candidate_id=r.id) }}">{{ r.name or r.filename }}</a>
+                        {% if r.email %}<div class="muted small">{{ r.email }}</div>{% endif %}
+                    {% else %}
+                        {{ r.name or r.filename }}
+                        <div class="muted small">{{ r.filename }}</div>
+                    {% endif %}
+                </td>
+                {% if r.status == 'ok' %}
+                    <td><span class="score-bar"><span style="width: {{ (r.score * 100)|round|int }}%"></span></span>{{ "%.0f"|format(r.score * 100) }}%</td>
+                    <td><span class="badge {{ r.decision|lower|replace(' ', '-') }}">{{ r.decision }}</span></td>
+                    <td>{{ r.role }}</td>
+                    <td>{{ "%.0f"|format(r.match_pct) }}%</td>
+                    <td><div class="chips">{% for m in r.missing[:3] %}<span class="chip miss">{{ m }}</span>{% endfor %}</div></td>
+                {% else %}
+                    <td colspan="5"><span class="badge error">Could not process</span> <span class="muted small">{{ r.error }}</span></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+        <p class="muted">No candidates match these filters.</p>
+    {% endif %}
+
+    {% if pages > 1 %}
+        {% set args = request.args.to_dict() %}
+        <div class="pager">
+            {% if page > 1 %}{% set _ = args.update({'page': page - 1}) %}<a class="btn secondary small" href="{{ url_for('hr.view', batch_id=batch.id, **args) }}">&larr; Previous</a>{% endif %}
+            <span class="muted small">Page {{ page }} of {{ pages }}</span>
+            {% if page < pages %}{% set _ = args.update({'page': page + 1}) %}<a class="btn secondary small" href="{{ url_for('hr.view', batch_id=batch.id, **args) }}">Next &rarr;</a>{% endif %}
+        </div>
+    {% endif %}
+</div>
+
+{% if batch.status == 'processing' %}
+<script>
+(function () {
+    var url = {{ url_for('hr.status', batch_id=batch.id)|tojson }};
+    function poll() {
+        fetch(url).then(function (r) { return r.json(); }).then(function (s) {
+            document.getElementById('progress-bar').style.width = s.percent + '%';
+            document.getElementById('progress-text').textContent = s.done + ' of ' + s.total + ' done';
+            if (s.status !== 'processing') { window.location.reload(); return; }
+            setTimeout(poll, 2000);
+        }).catch(function () { setTimeout(poll, 5000); });
+    }
+    setTimeout(poll, 1500);
+})();
+</script>
+{% endif %}
+{% endblock %}

@@ -55,6 +55,7 @@ class SkillExtractor:
                     self.skills_by_category[category].append(skill)
                     self.skill_weights[skill] = weight
             
+            self._compile_patterns()
             logger.info(f"Loaded {len(self.skills_data)} skills in {len(self.skills_by_category)} categories")
             
         except FileNotFoundError:
@@ -63,6 +64,27 @@ class SkillExtractor:
         except json.JSONDecodeError as e:
             logger.error(f"Error parsing skills JSON: {e}")
             self.skills_data = []
+    
+    def _compile_patterns(self):
+        """
+        Compile one regex per skill, once.
+        
+        Longest skills come first so specific phrases win over short ones.
+        Lookarounds are used instead of \\b so skills ending in symbols
+        (c++, c#) match correctly.
+        """
+        ordered = sorted(
+            self.skills_data,
+            key=lambda x: len(x.get('skill', '')),
+            reverse=True
+        )
+        self._compiled_skills = []
+        for entry in ordered:
+            skill = entry.get('skill', '').lower()
+            if not skill:
+                continue
+            pattern = re.compile(r'(?<!\w)' + re.escape(skill) + r'(?!\w)')
+            self._compiled_skills.append((skill, entry, pattern))
     
     def extract_skills(self, text: str) -> List[Dict]:
         """
@@ -78,31 +100,18 @@ class SkillExtractor:
         found_skills = []
         seen_skills = set()
         
-        # Sort skills by length (longest first) to match more specific skills first
-        sorted_skills = sorted(
-            self.skills_data, 
-            key=lambda x: len(x.get('skill', '')), 
-            reverse=True
-        )
-        
-        for skill_entry in sorted_skills:
-            skill = skill_entry.get('skill', '').lower()
-            
+        for skill, entry, pattern in getattr(self, '_compiled_skills', []):
             if skill in seen_skills:
                 continue
-            
-            # Create pattern to match whole word/phrase
-            pattern = r'\b' + re.escape(skill) + r'\b'
-            
-            if re.search(pattern, text_lower):
+            if pattern.search(text_lower):
                 found_skills.append({
-                    'skill': skill_entry.get('skill'),
-                    'category': skill_entry.get('category', 'unknown'),
-                    'weight': skill_entry.get('weight', 1.0)
+                    'skill': entry.get('skill'),
+                    'category': entry.get('category', 'unknown'),
+                    'weight': entry.get('weight', 1.0)
                 })
                 seen_skills.add(skill)
         
-        logger.info(f"Extracted {len(found_skills)} unique skills from text")
+        logger.debug(f"Extracted {len(found_skills)} unique skills from text")
         return found_skills
     
     def extract_skills_by_category(self, text: str) -> Dict[str, List[str]]:

@@ -40,19 +40,32 @@ from engine.graph_builder import GraphBuilder
 # Import resume parser
 from data.resume_parser import extract_text_from_file
 
+# Bulk screening, roadmaps
+from engine.roadmaps import RoadmapLibrary
+from engine.store import ScreeningStore
+from routes_hr import bp as hr_bp
+from routes_roadmaps import bp as roadmaps_bp
 
-def create_app(config_name='default'):
+
+def create_app(config_name='default', overrides=None):
     """Application factory pattern for Flask app."""
     app = Flask(__name__)
     
     # Load configuration
     app.config.from_object(config[config_name])
+    app.config.update(overrides or {})
     
     # Sessions/flash messages need a secret key. If none is configured, use a
     # random per-process key (sessions reset on restart) instead of crashing.
     if not app.config.get('SECRET_KEY'):
         logger.warning("SECRET_KEY not set - using a random key for this process")
         app.config['SECRET_KEY'] = secrets.token_hex(32)
+    
+    # Results database for bulk screening (SQLite file)
+    db_path = app.config.get('DATABASE') or os.path.join(app.instance_path, 'screening.db')
+    os.makedirs(os.path.dirname(os.path.abspath(db_path)), exist_ok=True)
+    store = ScreeningStore(db_path)
+    roadmap_library = RoadmapLibrary()
     
     # Initialize pipeline components (lazy loading)
     pipeline = None
@@ -105,6 +118,17 @@ def create_app(config_name='default'):
             graph_builder = GraphBuilder(app.config['JOBS_FILE'])
         return graph_builder
     
+    # Shared services for the bulk-screening and roadmap blueprints
+    app.extensions['hiring'] = {
+        'store': store,
+        'roadmaps': roadmap_library,
+        'get_pipeline': get_pipeline,
+        'parse_file': extract_text_from_file,
+        'interview_questions': lambda skills: generate_interview_questions(skills),
+    }
+    app.register_blueprint(hr_bp)
+    app.register_blueprint(roadmaps_bp)
+    
     # ==================== Routes ====================
     
     @app.route('/')
@@ -122,6 +146,17 @@ def create_app(config_name='default'):
         except (OSError, ValueError) as e:
             logger.error(f"Error loading learning resources: {e}")
         return []
+    
+    def recommend_roadmap(results):
+        """Compact roadmap summary for the best-matching role (or None)."""
+        best = results.get('best_match') or {}
+        base = (roadmap_library.recommend_for_role(best.get('role'))
+                or roadmap_library.recommend_for_gaps(best.get('missing_skills', [])))
+        if not base:
+            return None
+        plan = roadmap_library.personalize(base, results.get('extracted_skills', []))
+        return {key: plan[key] for key in ('slug', 'title', 'duration_weeks', 'progress',
+                                           'next_stage', 'skills_known', 'skills_total')}
     
     def analyze_upload(file, candidate_name):
         """
@@ -159,6 +194,7 @@ def create_app(config_name='default'):
         results['interview_questions'] = generate_interview_questions(
             results.get('extracted_skills', [])
         )
+        results['recommended_roadmap'] = recommend_roadmap(results)
         return results
     
     @app.route('/analyze', methods=['POST'])
@@ -242,7 +278,11 @@ def create_app(config_name='default'):
     @app.errorhandler(413)
     def request_entity_too_large(error):
         """Handle file too large error."""
-        max_size_mb = app.config['MAX_RESUME_FILE_SIZE'] / (1024 * 1024)
+        limit = request.max_content_length or app.config['MAX_CONTENT_LENGTH']
+        max_size_mb = limit / (1024 * 1024)
+        if request.path.startswith('/bulk'):
+            flash(f'Upload too large. Maximum total size: {max_size_mb:g}MB', 'error')
+            return redirect(url_for('hr.bulk_form'))
         if request.path.startswith('/api/'):
             return jsonify({'error': f'File too large. Maximum size: {max_size_mb:g}MB'}), 413
         flash(f'File too large. Maximum size: {max_size_mb:g}MB', 'error')

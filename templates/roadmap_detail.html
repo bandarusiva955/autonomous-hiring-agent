@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{{ roadmap.title }} roadmap - AI Hiring Agent{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('roadmaps.index') }}">&larr; All roadmaps</a>
+<h1>{{ roadmap.title }}</h1>
+<p class="sub">{{ roadmap.summary }} <span class="muted">({{ roadmap.duration_weeks }} weeks, {{ roadmap.level }})</span></p>
+
+<form class="card" method="get">
+    <label for="skills">Skills you already have <span class="muted">(comma separated)</span></label>
+    <input type="text" id="skills" name="skills" value="{{ skills_text }}" placeholder="python, sql, git">
+    <p style="margin-top:12px"><button class="btn small" type="submit">Show my progress</button></p>
+</form>
+
+{% if has_skills %}
+<div class="card">
+    <h2>Your progress: {{ roadmap.progress }}%</h2>
+    <div class="progress" style="margin:8px 0"><span style="width: {{ roadmap.progress }}%"></span></div>
+    <p class="muted small">You cover {{ roadmap.skills_known }} of {{ roadmap.skills_total }} skills in this roadmap.
+        {% if roadmap.next_stage %}Start with: <strong>{{ roadmap.next_stage }}</strong>.{% else %}You already cover every stage.{% endif %}</p>
+</div>
+{% endif %}
+
+{% for stage in roadmap.stages %}
+<div class="stage {{ stage.status if has_skills else '' }}">
+    <h3>
+        {{ loop.index }}. {{ stage.title }}
+        <span class="muted small">{{ stage.weeks }} week{{ '' if stage.weeks == 1 else 's' }}</span>
+        {% if has_skills %}<span class="badge {{ stage.status }}">{{ stage.status|replace('_', ' ') }}</span>{% endif %}
+    </h3>
+    <div class="chips" style="margin:6px 0">
+        {% for t in stage.skills %}
+            {% if has_skills %}
+                <span class="chip {{ 'ok' if t in stage.have else 'miss' }}">{{ t }}</span>
+            {% else %}
+                <span class="chip">{{ t }}</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <ul>{% for topic in stage.topics %}<li>{{ topic }}</li>{% endfor %}</ul>
+    <p><strong>Build:</strong> {{ stage.project }}</p>
+    {% if stage.resources %}
+        <p class="small muted" style="margin-top:6px">Official docs:
+            {% for res in stage.resources %}<a href="{{ res.url }}" target="_blank" rel="noopener noreferrer">{{ res.title }}</a>{{ ' &middot; '|safe if not loop.last }}{% endfor %}
+        </p>
+    {% endif %}
+</div>
+{% endfor %}
+{% endblock %}

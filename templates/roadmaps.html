@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Roadmaps - AI Hiring Agent{% endblock %}
+{% block content %}
+<h1>Career roadmaps</h1>
+<p class="sub">Step-by-step learning paths. Open one and enter the skills you already have to see where to start.</p>
+
+<div class="grid">
+    {% for r in roadmaps %}
+    <div class="card">
+        <div>
+            <h2 style="margin-bottom:4px">{{ r.title }}</h2>
+            <span class="muted small">{{ r.duration_weeks }} weeks &middot; {{ r.level }} &middot; {{ r.stages|length }} stages</span>
+        </div>
+        <p>{{ r.summary }}</p>
+        <div class="chips">{% for role in r.roles %}<span class="chip">{{ role }}</span>{% endfor %}</div>
+        <div style="margin-top:auto"><a class="btn small" href="{{ url_for('roadmaps.detail', slug=r.slug) }}">View roadmap</a></div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}HR bulk screening - AI Hiring Agent{% endblock %}
+{% block content %}
+<h1>HR bulk screening</h1>
+<p class="sub">Upload many resumes at once, score them against a role or your own job description, and get a ranked shortlist you can filter and export.</p>
+
+<form method="post" action="{{ url_for('hr.bulk_form') }}" enctype="multipart/form-data">
+    <div class="card">
+        <h2>1. What are you hiring for?</h2>
+        {% set kind = form.get('target_kind', 'best_fit') %}
+        <div class="choice-row field">
+            <label class="choice">
+                <input type="radio" name="target_kind" value="best_fit" {% if kind == 'best_fit' %}checked{% endif %}>
+                <strong>Best fit</strong>
+                <span class="muted small">Match each candidate to the role they suit most</span>
+            </label>
+            <label class="choice">
+                <input type="radio" name="target_kind" value="role" {% if kind == 'role' %}checked{% endif %}>
+                <strong>A specific role</strong>
+                <span class="muted small">Rank everyone for one of {{ roles|length }} built-in roles</span>
+            </label>
+            <label class="choice">
+                <input type="radio" name="target_kind" value="jd" {% if kind == 'jd' %}checked{% endif %}>
+                <strong>My job description</strong>
+                <span class="muted small">Paste a JD and rank against its skills</span>
+            </label>
+        </div>
+
+        <div class="field" id="role-field">
+            <label for="role">Role</label>
+            <select name="role" id="role">
+                <option value="">Choose a role...</option>
+                {% for r in roles %}
+                    <option value="{{ r }}" {% if form.get('role') == r %}selected{% endif %}>{{ r }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="field" id="jd-field">
+            <label for="jd_text">Job description</label>
+            <textarea name="jd_text" id="jd_text" placeholder="Paste the full job description here">{{ form.get('jd_text', '') }}</textarea>
+            <div class="hint">Skills are detected from the text. Every skill found is treated as required.</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>2. Add resumes</h2>
+        <div class="dropzone">
+            <div><strong>PDF or DOCX files, or a ZIP of them</strong></div>
+            <div class="muted small">Up to {{ max_files }} resumes per batch. Select many files at once, or upload a ZIP. Duplicate files are skipped.</div>
+            <input type="file" name="resumes" multiple accept=".pdf,.docx,.zip" required>
+        </div>
+        <div class="field" style="margin-top:16px">
+            <label for="label">Batch name <span class="muted">(optional)</span></label>
+            <input type="text" name="label" id="label" maxlength="80" placeholder="e.g. Data Analyst - November drive" value="{{ form.get('label', '') }}">
+        </div>
+        <p class="hint">Resume files are deleted as soon as they are processed. Only names, emails, skills and scores are kept, and batches are removed after 30 days or when you delete them.</p>
+        <p style="margin-top:14px"><button class="btn" type="submit">Screen resumes</button></p>
+    </div>
+</form>
+
+{% if recent %}
+<div class="card">
+    <h2>Your recent batches</h2>
+    <div class="table-wrap">
+    <table>
+        <thead><tr><th>Batch</th><th>Scored against</th><th>Resumes</th><th>Status</th></tr></thead>
+        <tbody>
+        {% for b in recent %}
+            <tr>
+                <td><a href="{{ url_for('hr.view', batch_id=b.id) }}">{{ b.label }}</a></td>
+                <td>{{ b.target_label }}</td>
+                <td>{{ b.done }} / {{ b.total }}</td>
+                <td>{{ b.status }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+{% endif %}
+
+<script>
+(function () {
+    function update() {
+        var kind = document.querySelector('input[name=target_kind]:checked').value;
+        document.getElementById('role-field').style.display = kind === 'role' ? '' : 'none';
+        document.getElementById('jd-field').style.display = kind === 'jd' ? '' : 'none';
+    }
+    document.querySelectorAll('input[name=target_kind]').forEach(function (r) {
+        r.addEventListener('change', update);
+    });
+    update();
+})();
+</script>
+{% endblock %}

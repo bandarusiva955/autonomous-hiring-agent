@@ -57,8 +57,15 @@ class HiringScorer:
         # Component 4: Critical skills match
         # Check if core job skills are present
         matched_skills = job_match.get('matched_skills', [])
-        critical_skills = matched_skills  # Use matched skills as proxy
-        critical_skills_ratio = len(critical_skills) / max(len(job_match.get('matched_skills', [])), 1)
+        core_skills = job_match.get('core_skills') or []
+        if core_skills:
+            matched_set = {s.lower() for s in matched_skills}
+            critical_skills_ratio = (
+                sum(1 for s in core_skills if s.lower() in matched_set) / len(core_skills)
+            )
+        else:
+            total = len(matched_skills) + len(job_match.get('missing_skills', []))
+            critical_skills_ratio = len(matched_skills) / total if total else 0.0
         
         # Calculate weighted score
         weighted_score = (

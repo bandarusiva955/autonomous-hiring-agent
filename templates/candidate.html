@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}{{ person.name or person.filename }} - AI Hiring Agent{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('hr.view', batch_id=batch.id) }}">&larr; Back to {{ batch.label }}</a>
+
+<div class="topbar">
+    <div>
+        <h1>{{ person.name or person.filename }}</h1>
+        <p class="sub" style="margin-bottom:0">
+            {% if person.email %}{{ person.email }} &middot; {% endif %}{{ person.filename }}
+        </p>
+    </div>
+    {% if person.status == 'ok' %}
+    <div>
+        <span class="badge {{ person.decision|lower|replace(' ', '-') }}">{{ person.decision }}</span>
+        <span style="font-size:1.6rem;font-weight:700;margin-left:8px">{{ "%.0f"|format(person.score * 100) }}%</span>
+    </div>
+    {% endif %}
+</div>
+
+{% if person.status != 'ok' %}
+    <div class="flash error">This file could not be processed: {{ person.error }}</div>
+{% else %}
+<div class="stats">
+    <div class="stat"><div class="num">{{ person.role }}</div><div class="lbl">Scored against</div></div>
+    <div class="stat"><div class="num">{{ "%.0f"|format(person.match_pct) }}%</div><div class="lbl">Skill match</div></div>
+    <div class="stat"><div class="num">{{ "%.0f"|format(person.similarity * 100) }}%</div><div class="lbl">Text similarity</div></div>
+    <div class="stat"><div class="num">{{ person.skills|length }}</div><div class="lbl">Skills found</div></div>
+</div>
+
+<div class="card">
+    <h2>Matched skills</h2>
+    <div class="chips">
+        {% for s in person.matched %}<span class="chip ok">{{ s }}</span>{% else %}<span class="muted">None</span>{% endfor %}
+    </div>
+    <h2 style="margin-top:18px">Missing skills</h2>
+    <div class="chips">
+        {% for s in person.missing %}<span class="chip miss">{{ s }}</span>{% else %}<span class="muted">None, all required skills found</span>{% endfor %}
+    </div>
+</div>
+
+<div class="card">
+    <h2>All skills found</h2>
+    <div class="chips">{% for s in person.skills %}<span class="chip">{{ s }}</span>{% endfor %}</div>
+    <p class="hint" style="margin-top:10px">Skills are detected by keyword, so verify important ones in the interview.</p>
+</div>
+
+{% if questions %}
+<div class="card">
+    <h2>Questions to verify claimed skills</h2>
+    {% for skill, qs in questions.items() %}
+        <h3>{{ skill|title }}</h3>
+        <ul style="margin:0 0 12px 20px">{% for q in qs %}<li>{{ q }}</li>{% endfor %}</ul>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if roadmap %}
+<div class="card">
+    <h2>Suggested growth path: {{ roadmap.title }}</h2>
+    <p class="muted">Covers {{ roadmap.skills_known }} of {{ roadmap.skills_total }} roadmap skills ({{ roadmap.progress }}%).
+        {% if roadmap.next_stage %}Next stage: <strong>{{ roadmap.next_stage }}</strong>.{% endif %}</p>
+    <div class="progress" style="margin:10px 0 14px"><span style="width: {{ roadmap.progress }}%"></span></div>
+    <a class="btn secondary small" href="{{ url_for('roadmaps.detail', slug=roadmap.slug, skills=person.skills|join(',')) }}">See the full roadmap</a>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

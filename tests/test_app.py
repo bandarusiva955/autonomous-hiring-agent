@@ -11,8 +11,8 @@ from app import create_app  # noqa: E402
 
 
 @pytest.fixture()
-def client():
-    app = create_app("development")
+def client(tmp_path):
+    app = create_app("development", {"DATABASE": str(tmp_path / "test.db")})
     app.config["TESTING"] = True
     app.config["MAX_CONTENT_LENGTH"] = 1024 * 1024  # 1MB keeps the size test fast
     return app.test_client()

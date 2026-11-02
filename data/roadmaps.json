@@ -1,0 +1,470 @@
+{
+  "roadmaps": [
+    {
+      "slug": "agentic-ai-engineer",
+      "title": "Agentic AI Engineer",
+      "summary": "Build LLM applications end to end: retrieval, tool-using agents, multi-agent workflows, evaluation and deployment.",
+      "duration_weeks": 20,
+      "level": "Intermediate",
+      "roles": ["Agentic AI Engineer", "AI Engineer", "NLP Engineer"],
+      "stages": [
+        {
+          "title": "Python and engineering foundations",
+          "weeks": 3,
+          "skills": ["python", "oop", "git", "pytest", "pydantic"],
+          "topics": ["Classes, generators, decorators, type hints", "Virtual environments and packaging", "Testing with pytest", "Git branching and pull requests"],
+          "project": "A small command-line tool with tests and a clean README",
+          "resources": [
+            {"title": "Python tutorial (official)", "url": "https://docs.python.org/3/tutorial/"},
+            {"title": "Pro Git book", "url": "https://git-scm.com/book/en/v2"}
+          ]
+        },
+        {
+          "title": "APIs and databases",
+          "weeks": 3,
+          "skills": ["fastapi", "sql", "postgresql", "sqlalchemy", "docker"],
+          "topics": ["REST design with FastAPI", "SQL joins, indexes, transactions", "ORM basics", "Containerizing a service"],
+          "project": "A CRUD API with PostgreSQL running in Docker",
+          "resources": [
+            {"title": "FastAPI tutorial", "url": "https://fastapi.tiangolo.com/tutorial/"},
+            {"title": "PostgreSQL tutorial", "url": "https://www.postgresql.org/docs/current/tutorial.html"},
+            {"title": "Docker get started", "url": "https://docs.docker.com/get-started/"}
+          ]
+        },
+        {
+          "title": "Machine learning and NLP basics",
+          "weeks": 3,
+          "skills": ["machine learning", "scikit-learn", "pandas", "numpy", "nlp"],
+          "topics": ["Train/test split, cross-validation, metrics", "Classification and regression", "TF-IDF and text classification", "Error analysis"],
+          "project": "A text classifier with a documented evaluation",
+          "resources": [
+            {"title": "scikit-learn user guide", "url": "https://scikit-learn.org/stable/user_guide.html"},
+            {"title": "pandas user guide", "url": "https://pandas.pydata.org/docs/user_guide/index.html"}
+          ]
+        },
+        {
+          "title": "LLM applications and retrieval (RAG)",
+          "weeks": 4,
+          "skills": ["generative ai", "openai api", "prompt engineering", "langchain", "rag", "chromadb", "vector database"],
+          "topics": ["Prompting and structured outputs", "Embeddings and vector search", "Chunking and retrieval quality", "Citing sources and handling no-answer cases"],
+          "project": "A document Q&A app with retrieval, citations and a small evaluation set",
+          "resources": [
+            {"title": "ChromaDB docs", "url": "https://docs.trychroma.com/"}
+          ]
+        },
+        {
+          "title": "Agents and multi-agent workflows",
+          "weeks": 4,
+          "skills": ["langgraph", "crewai", "langchain", "hugging face"],
+          "topics": ["Tool calling and planning loops", "State machines with LangGraph", "Role-based agents with CrewAI", "Guardrails, retries and cost limits"],
+          "project": "A multi-agent research assistant with traceable steps",
+          "resources": []
+        },
+        {
+          "title": "Deployment, evaluation and portfolio",
+          "weeks": 3,
+          "skills": ["docker", "ci/cd", "github actions", "mlops"],
+          "topics": ["CI pipeline with tests", "Logging and tracing agent runs", "Evaluation sets and regression checks", "Live demo and a clear README"],
+          "project": "Deploy your best project with a public demo and write up the results",
+          "resources": [
+            {"title": "GitHub Actions docs", "url": "https://docs.github.com/en/actions"}
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "python-backend-developer",
+      "title": "Python Backend Developer",
+      "summary": "Design, build, test and deploy reliable APIs and services with Python.",
+      "duration_weeks": 16,
+      "level": "Beginner to Intermediate",
+      "roles": ["Backend Developer", "Software Engineer"],
+      "stages": [
+        {
+          "title": "Python and computer science fundamentals",
+          "weeks": 4,
+          "skills": ["python", "oop", "data structures", "algorithms", "git"],
+          "topics": ["Core Python and OOP", "Arrays, hash maps, trees, graphs", "Big-O reasoning", "Version control workflow"],
+          "project": "Solve and explain 40 problems grouped by pattern",
+          "resources": [
+            {"title": "Python tutorial (official)", "url": "https://docs.python.org/3/tutorial/"},
+            {"title": "Pro Git book", "url": "https://git-scm.com/book/en/v2"}
+          ]
+        },
+        {
+          "title": "Databases",
+          "weeks": 3,
+          "skills": ["sql", "postgresql", "sqlalchemy", "redis"],
+          "topics": ["Schema design and normalization", "Joins, window functions, indexes", "Transactions", "Caching with Redis"],
+          "project": "Design a schema for an e-commerce app and write its key queries",
+          "resources": [
+            {"title": "PostgreSQL tutorial", "url": "https://www.postgresql.org/docs/current/tutorial.html"}
+          ]
+        },
+        {
+          "title": "Building APIs",
+          "weeks": 4,
+          "skills": ["fastapi", "restful api", "pydantic", "jwt", "oauth"],
+          "topics": ["REST conventions and status codes", "Validation and error handling", "Authentication and authorization", "Pagination and rate limiting"],
+          "project": "A secured REST API with auth and pagination",
+          "resources": [
+            {"title": "FastAPI tutorial", "url": "https://fastapi.tiangolo.com/tutorial/"}
+          ]
+        },
+        {
+          "title": "Quality and delivery",
+          "weeks": 3,
+          "skills": ["pytest", "docker", "ci/cd", "github actions", "linux"],
+          "topics": ["Unit and integration tests", "Docker and Compose", "CI pipelines", "Linux and shell basics"],
+          "project": "Add tests, Docker and CI to your API",
+          "resources": [
+            {"title": "Docker get started", "url": "https://docs.docker.com/get-started/"}
+          ]
+        },
+        {
+          "title": "Scaling and system design",
+          "weeks": 2,
+          "skills": ["system design", "microservices", "apache kafka", "aws"],
+          "topics": ["Load balancing and caching", "Queues and async work", "Service boundaries", "Cloud deployment basics"],
+          "project": "Write a design doc for a URL shortener and deploy a version of it",
+          "resources": []
+        }
+      ]
+    },
+    {
+      "slug": "data-analyst",
+      "title": "Data Analyst",
+      "summary": "Turn raw data into clear answers with SQL, Excel, Python and dashboards.",
+      "duration_weeks": 12,
+      "level": "Beginner",
+      "roles": ["Data Analyst", "Business Analyst", "BI Developer"],
+      "stages": [
+        {
+          "title": "Spreadsheets and statistics",
+          "weeks": 2,
+          "skills": ["excel", "statistics", "probability", "hypothesis testing"],
+          "topics": ["Formulas, pivots, lookups", "Descriptive statistics", "Distributions and sampling", "A/B test basics"],
+          "project": "Clean and summarize a messy public dataset in Excel",
+          "resources": []
+        },
+        {
+          "title": "SQL for analysis",
+          "weeks": 3,
+          "skills": ["sql", "mysql", "postgresql", "data analysis"],
+          "topics": ["Joins and aggregations", "CTEs and window functions", "Cohort and funnel queries", "Query performance basics"],
+          "project": "Answer 15 business questions from one database with documented queries",
+          "resources": [
+            {"title": "PostgreSQL tutorial", "url": "https://www.postgresql.org/docs/current/tutorial.html"}
+          ]
+        },
+        {
+          "title": "Python for data",
+          "weeks": 3,
+          "skills": ["python", "pandas", "numpy", "matplotlib", "seaborn"],
+          "topics": ["DataFrames and cleaning", "Exploratory analysis", "Visualization choices", "Notebooks that others can rerun"],
+          "project": "An exploratory analysis notebook with a written conclusion",
+          "resources": [
+            {"title": "pandas user guide", "url": "https://pandas.pydata.org/docs/user_guide/index.html"}
+          ]
+        },
+        {
+          "title": "Dashboards and storytelling",
+          "weeks": 3,
+          "skills": ["power bi", "tableau", "data visualization", "business intelligence"],
+          "topics": ["Data modeling for BI", "Measures and filters", "Dashboard layout", "Presenting insights to non-technical audiences"],
+          "project": "A dashboard with a one-page summary of decisions it supports",
+          "resources": [
+            {"title": "Power BI documentation", "url": "https://learn.microsoft.com/en-us/power-bi/"}
+          ]
+        },
+        {
+          "title": "Portfolio and interviews",
+          "weeks": 1,
+          "skills": ["documentation", "git", "github"],
+          "topics": ["Three case studies with clear business questions", "Explaining trade-offs", "SQL and case-study practice"],
+          "project": "Publish three case studies on GitHub with short write-ups",
+          "resources": []
+        }
+      ]
+    },
+    {
+      "slug": "data-scientist",
+      "title": "Data Scientist / ML Engineer",
+      "summary": "Build, evaluate and deploy predictive models on real data.",
+      "duration_weeks": 18,
+      "level": "Intermediate",
+      "roles": ["Data Scientist", "Machine Learning Engineer", "Research Scientist"],
+      "stages": [
+        {
+          "title": "Python, math and data handling",
+          "weeks": 4,
+          "skills": ["python", "numpy", "pandas", "statistics", "probability"],
+          "topics": ["Vectorized computation", "Linear algebra intuition", "Distributions and inference", "Data cleaning"],
+          "project": "Reproducible data-cleaning pipeline for a messy dataset",
+          "resources": [
+            {"title": "pandas user guide", "url": "https://pandas.pydata.org/docs/user_guide/index.html"}
+          ]
+        },
+        {
+          "title": "Classical machine learning",
+          "weeks": 5,
+          "skills": ["machine learning", "scikit-learn", "regression", "classification", "random forest", "xgboost", "feature engineering", "hyperparameter tuning"],
+          "topics": ["Bias-variance and overfitting", "Metrics for imbalanced data", "Tree ensembles", "Cross-validation and tuning"],
+          "project": "A churn or fraud model with a documented evaluation and error analysis",
+          "resources": [
+            {"title": "scikit-learn user guide", "url": "https://scikit-learn.org/stable/user_guide.html"}
+          ]
+        },
+        {
+          "title": "Deep learning",
+          "weeks": 4,
+          "skills": ["deep learning", "pytorch", "neural networks", "tensorflow"],
+          "topics": ["Backpropagation intuition", "Training loops and regularization", "CNNs and sequence models", "Transfer learning"],
+          "project": "Fine-tune a pretrained model on a small custom dataset",
+          "resources": [
+            {"title": "PyTorch tutorials", "url": "https://pytorch.org/tutorials/"}
+          ]
+        },
+        {
+          "title": "SQL and experimentation",
+          "weeks": 2,
+          "skills": ["sql", "a/b testing", "data visualization"],
+          "topics": ["Analytical SQL", "Experiment design", "Communicating uncertainty"],
+          "project": "Design and analyze an A/B test on simulated data",
+          "resources": []
+        },
+        {
+          "title": "Deployment and MLOps",
+          "weeks": 3,
+          "skills": ["fastapi", "docker", "mlflow", "model deployment", "git"],
+          "topics": ["Serving a model behind an API", "Experiment tracking", "Monitoring and drift", "Reproducible environments"],
+          "project": "Serve your best model with Docker and track runs",
+          "resources": [
+            {"title": "Docker get started", "url": "https://docs.docker.com/get-started/"}
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "data-engineer",
+      "title": "Data Engineer",
+      "summary": "Build reliable pipelines and warehouses that analysts and models depend on.",
+      "duration_weeks": 16,
+      "level": "Intermediate",
+      "roles": ["Data Engineer", "ETL Developer"],
+      "stages": [
+        {
+          "title": "Python, SQL and Linux",
+          "weeks": 4,
+          "skills": ["python", "sql", "linux", "bash", "git"],
+          "topics": ["Advanced SQL", "Python for data tasks", "Shell scripting and cron", "Version control"],
+          "project": "A scripted ingest-and-transform job with logging",
+          "resources": [
+            {"title": "PostgreSQL tutorial", "url": "https://www.postgresql.org/docs/current/tutorial.html"}
+          ]
+        },
+        {
+          "title": "Warehousing and modeling",
+          "weeks": 3,
+          "skills": ["data warehouse", "snowflake", "bigquery", "dbt", "postgresql"],
+          "topics": ["Star schemas and slowly changing dimensions", "ELT with dbt", "Partitioning and cost control"],
+          "project": "Model a warehouse for sales data with tested dbt models",
+          "resources": []
+        },
+        {
+          "title": "Orchestration and pipelines",
+          "weeks": 4,
+          "skills": ["apache airflow", "etl pipelines", "data pipeline", "docker"],
+          "topics": ["DAG design", "Idempotency and retries", "Data quality checks", "Containerized jobs"],
+          "project": "An Airflow pipeline with quality checks and alerting",
+          "resources": [
+            {"title": "Apache Airflow docs", "url": "https://airflow.apache.org/docs/"}
+          ]
+        },
+        {
+          "title": "Big data and streaming",
+          "weeks": 3,
+          "skills": ["spark", "pyspark", "apache kafka", "delta lake"],
+          "topics": ["Spark transformations and shuffles", "Event streaming concepts", "Lakehouse tables"],
+          "project": "A batch plus streaming pipeline over a public event dataset",
+          "resources": []
+        },
+        {
+          "title": "Cloud and delivery",
+          "weeks": 2,
+          "skills": ["aws", "terraform", "ci/cd"],
+          "topics": ["Storage and compute services", "Infrastructure as code", "CI for data projects"],
+          "project": "Deploy your pipeline to the cloud with infrastructure as code",
+          "resources": [
+            {"title": "AWS documentation", "url": "https://docs.aws.amazon.com/"}
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "devops-cloud-engineer",
+      "title": "DevOps / Cloud Engineer",
+      "summary": "Automate builds, infrastructure and operations on the cloud.",
+      "duration_weeks": 16,
+      "level": "Intermediate",
+      "roles": ["DevOps Engineer", "Cloud Engineer", "Site Reliability Engineer", "Systems Administrator", "Solutions Architect"],
+      "stages": [
+        {
+          "title": "Linux, networking and scripting",
+          "weeks": 4,
+          "skills": ["linux", "bash scripting", "git", "python"],
+          "topics": ["Processes, permissions, services", "DNS, TCP, HTTP basics", "Shell and Python automation", "Git workflows"],
+          "project": "Automate server setup with a tested script",
+          "resources": [
+            {"title": "Pro Git book", "url": "https://git-scm.com/book/en/v2"}
+          ]
+        },
+        {
+          "title": "Containers",
+          "weeks": 3,
+          "skills": ["docker", "docker compose", "nginx"],
+          "topics": ["Images and layers", "Compose for multi-service apps", "Reverse proxies"],
+          "project": "Containerize a multi-service app behind nginx",
+          "resources": [
+            {"title": "Docker get started", "url": "https://docs.docker.com/get-started/"}
+          ]
+        },
+        {
+          "title": "Cloud and infrastructure as code",
+          "weeks": 4,
+          "skills": ["aws", "terraform", "iam", "ansible"],
+          "topics": ["Core compute, storage, networking services", "Least-privilege IAM", "Terraform modules and state", "Configuration management"],
+          "project": "Provision a small production-style environment with Terraform",
+          "resources": [
+            {"title": "AWS documentation", "url": "https://docs.aws.amazon.com/"},
+            {"title": "Terraform tutorials", "url": "https://developer.hashicorp.com/terraform/tutorials"}
+          ]
+        },
+        {
+          "title": "CI/CD",
+          "weeks": 2,
+          "skills": ["ci/cd", "github actions", "jenkins"],
+          "topics": ["Build, test, deploy pipelines", "Secrets handling", "Rollbacks and release strategies"],
+          "project": "A pipeline that tests, builds and deploys on every merge",
+          "resources": [
+            {"title": "GitHub Actions docs", "url": "https://docs.github.com/en/actions"}
+          ]
+        },
+        {
+          "title": "Kubernetes and observability",
+          "weeks": 3,
+          "skills": ["kubernetes", "helm", "prometheus", "grafana"],
+          "topics": ["Pods, services, deployments", "Helm charts", "Metrics and alerting", "Incident response basics"],
+          "project": "Deploy an app to Kubernetes with dashboards and alerts",
+          "resources": [
+            {"title": "Kubernetes tutorials", "url": "https://kubernetes.io/docs/tutorials/"}
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "full-stack-developer",
+      "title": "Full Stack Developer",
+      "summary": "Ship complete web applications from database to user interface.",
+      "duration_weeks": 18,
+      "level": "Beginner to Intermediate",
+      "roles": ["Full Stack Developer", "Technical Lead"],
+      "stages": [
+        {
+          "title": "Web fundamentals",
+          "weeks": 3,
+          "skills": ["html", "css", "javascript", "git", "responsive design"],
+          "topics": ["Semantic HTML and layout", "Modern JavaScript", "Responsive design", "Browser dev tools"],
+          "project": "A responsive multi-page site",
+          "resources": [
+            {"title": "MDN Learn web development", "url": "https://developer.mozilla.org/en-US/docs/Learn"}
+          ]
+        },
+        {
+          "title": "Frontend framework",
+          "weeks": 4,
+          "skills": ["react", "typescript", "next.js", "tailwind css"],
+          "topics": ["Components, state, effects", "Routing and data fetching", "TypeScript basics", "Accessibility"],
+          "project": "A dashboard app with routing and API data",
+          "resources": [
+            {"title": "React documentation", "url": "https://react.dev/learn"}
+          ]
+        },
+        {
+          "title": "Backend and APIs",
+          "weeks": 4,
+          "skills": ["node.js", "express", "restful api", "jwt"],
+          "topics": ["REST design", "Authentication", "Validation and errors", "File uploads"],
+          "project": "A secured API for your dashboard app",
+          "resources": []
+        },
+        {
+          "title": "Databases",
+          "weeks": 3,
+          "skills": ["sql", "postgresql", "mongodb", "prisma"],
+          "topics": ["Relational modeling", "Migrations", "When to choose NoSQL", "Query performance"],
+          "project": "Persist your app in PostgreSQL with migrations",
+          "resources": [
+            {"title": "PostgreSQL tutorial", "url": "https://www.postgresql.org/docs/current/tutorial.html"}
+          ]
+        },
+        {
+          "title": "Testing and deployment",
+          "weeks": 4,
+          "skills": ["docker", "ci/cd", "github actions", "aws"],
+          "topics": ["Unit and end-to-end tests", "Containers", "CI/CD", "Hosting and monitoring"],
+          "project": "Deploy the full app with a pipeline and a live URL",
+          "resources": [
+            {"title": "Docker get started", "url": "https://docs.docker.com/get-started/"}
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "frontend-developer",
+      "title": "Frontend Developer",
+      "summary": "Build fast, accessible and well-designed user interfaces.",
+      "duration_weeks": 14,
+      "level": "Beginner",
+      "roles": ["Frontend Developer", "React Native Developer"],
+      "stages": [
+        {
+          "title": "HTML, CSS and layout",
+          "weeks": 3,
+          "skills": ["html", "css", "responsive design", "sass", "bootstrap"],
+          "topics": ["Flexbox and grid", "Responsive layouts", "CSS architecture", "Accessibility basics"],
+          "project": "Recreate three real-world page layouts",
+          "resources": [
+            {"title": "MDN Learn web development", "url": "https://developer.mozilla.org/en-US/docs/Learn"}
+          ]
+        },
+        {
+          "title": "JavaScript and TypeScript",
+          "weeks": 4,
+          "skills": ["javascript", "typescript", "git"],
+          "topics": ["Async programming", "DOM and events", "Modules and bundlers", "TypeScript types"],
+          "project": "An interactive app with no framework",
+          "resources": []
+        },
+        {
+          "title": "React and state management",
+          "weeks": 4,
+          "skills": ["react", "next.js", "tailwind css", "graphql"],
+          "topics": ["Component design", "Server and client state", "Routing", "Performance profiling"],
+          "project": "A production-quality app with real API data",
+          "resources": [
+            {"title": "React documentation", "url": "https://react.dev/learn"}
+          ]
+        },
+        {
+          "title": "Quality, design and delivery",
+          "weeks": 3,
+          "skills": ["figma", "user experience", "ci/cd", "github actions"],
+          "topics": ["Design handoff", "Component testing", "Lighthouse and Core Web Vitals", "Deployment previews"],
+          "project": "Ship a portfolio site with automated checks",
+          "resources": []
+        }
+      ]
+    }
+  ]
+}
